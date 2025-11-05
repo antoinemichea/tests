@@ -1,8 +1,10 @@
 {
   "name": "claude-static-site-optimizer",
-  "version": "1.0.0",
-  "description": "Claude Code skills for comprehensive static website optimization",
+  "version": "2.0.0",
+  "description": "Claude Code skills for comprehensive static website optimization with DEV and PROD workflows",
   "scripts": {
+    "dev": "echo 'Use Claude Code: static-site-optimizer:optimize-dev'",
+    "prod": "echo 'Use Claude Code: static-site-optimizer:package-prod'",
     "optimize:images": "node .claude/scripts/image-optimizer.js",
     "update:html": "node .claude/scripts/html-updater.js",
     "gdpr:optimize": "node .claude/scripts/gdpr-optimizer.js",

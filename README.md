@@ -22,6 +22,58 @@ Système complet de skills Claude pour optimiser des sites web statiques et atte
 
 **Important** : Ce système ne permettra JAMAIS l'utilisation de Google Fonts directement. Tout sera automatiquement converti vers Bunny Fonts.
 
+## ⚡ Deux Workflows Distincts
+
+Ce système propose **DEUX workflows spécialisés** pour les différentes phases de votre projet :
+
+### 🔧 Workflow DÉVELOPPEMENT (`optimize-dev`)
+**Pour**: Qualité du code, conformité, maintenabilité
+**Quand**: Pendant le développement, avant la production
+**Caractéristiques**:
+- ✅ Validation et corrections du code
+- ✅ Conformité RGPD/GDPR
+- ✅ Améliorations accessibilité
+- ✅ Structure SEO
+- ✅ **Code reste LISIBLE et MODIFIABLE**
+- ❌ PAS de minification
+- ❌ PAS de conversion d'images
+- ❌ PAS de compression agressive
+
+**Output**: Code propre, validé, conforme RGPD - prêt pour le développement
+
+### 🚀 Workflow PRODUCTION (`package-prod`)
+**Pour**: Performance maximale et optimisation bande passante
+**Quand**: Packaging final avant déploiement
+**Caractéristiques**:
+- ✅ Minification agressive (HTML, CSS, JS)
+- ✅ Conversion images (AVIF + WebP + variantes responsives)
+- ✅ Pre-compression (Brotli + Gzip)
+- ✅ Optimisation du code (tree-shaking)
+- ✅ Scores PageSpeed 95-100
+- ❌ Code devient ILLISIBLE
+- ❌ NON modifiable
+
+**Output**: Build production entièrement optimisé avec performance maximale
+
+### 📋 Comment choisir ?
+
+**Choisissez DÉVELOPPEMENT si:**
+- ✅ Vous développez encore le site
+- ✅ Vous devez lire et modifier le code
+- ✅ Vous travaillez en équipe
+- ✅ Vous devez debugger
+
+**Choisissez PRODUCTION si:**
+- ✅ Le développement est terminé
+- ✅ Le code est validé et testé
+- ✅ Vous êtes prêt à déployer
+- ✅ Vous voulez la performance maximale
+
+**Approche recommandée:**
+1. D'abord: Workflow **DÉVELOPPEMENT**
+2. Tester et valider
+3. Ensuite: Workflow **PRODUCTION** pour le déploiement
+
 ## 🎯 Objectifs
 
 - **🔒 RGPD/GDPR Compliance**: Conformité totale aux réglementations (PRIORITÉ #1)
@@ -135,40 +187,67 @@ brew install imagemagick jpegoptim optipng pngquant webp libavif
 
 ## 📖 Utilisation
 
-### Via les Skills Claude Code
+### Via les Skills Claude Code (Recommandé)
 
-Les skills sont organisés dans `.claude/skills/static-site-optimizer/` :
-
-#### 1. Optimisation complète (recommandé)
-
-Dans Claude Code, invoquez le skill principal :
+#### Option 1: Skill principal avec choix interactif
 
 ```
 static-site-optimizer:optimize
 ```
 
-Claude vous guidera à travers le processus complet :
-1. Analyse du répertoire
-2. Création de backup
-3. Validation du code
-4. **RGPD/GDPR Compliance & Responsive Design** ⚠️
-5. Optimisation des images
-6. Minification des assets
-7. **Pre-Compression (Brotli + Gzip)** 📦
-8. Audit PageSpeed
-9. Améliorations itératives
-10. Rapport final
+Claude vous demandera de choisir :
+- **DEVELOPMENT** (optimize-dev) - Code lisible, conformité RGPD
+- **PRODUCTION** (package-prod) - Optimisation maximale pour déploiement
+- **BOTH** - Les deux workflows en séquence (recommandé)
 
-#### 2. Skills individuels
-
-Vous pouvez aussi invoquer les skills spécifiques :
+#### Option 2: Workflow DÉVELOPPEMENT direct
 
 ```
-static-site-optimizer:gdpr-responsive # RGPD/GDPR + Responsive (IMPORTANT!)
-static-site-optimizer:validate        # Validation HTML/CSS/JS uniquement
-static-site-optimizer:optimize-images # Optimisation images uniquement
+static-site-optimizer:optimize-dev
+```
+
+**Processus en 8 étapes :**
+1. Analyse du répertoire et backup
+2. Validation du code (HTML, CSS, JS)
+3. Corrections automatiques des erreurs
+4. **RGPD/GDPR Compliance** ⚠️ (Google Fonts → Bunny Fonts)
+5. Optimisation basique des images (lossless uniquement)
+6. Améliorations accessibilité (WCAG AA)
+7. Structure SEO (meta tags, sitemap, robots.txt)
+8. Rapport de développement
+
+**Résultat**: Code propre, validé, conforme - **LISIBLE et MODIFIABLE**
+
+#### Option 3: Workflow PRODUCTION direct
+
+```
+static-site-optimizer:package-prod
+```
+
+**Processus en 10 étapes :**
+1. Vérifications pré-vol (code production-ready)
+2. Setup répertoire de production
+3. **Optimisation agressive des images** (AVIF + WebP + responsive)
+4. **Optimisation CSS** (minify, unused removal, critical CSS)
+5. **Optimisation JavaScript** (minify, tree-shake, mangle)
+6. **Minification HTML** (inline critical CSS)
+7. **Pre-Compression** 📦 (Brotli 11 + Gzip 9)
+8. Optimisations performance (resource hints, async)
+9. Audit PageSpeed (vérification 95-100 scores)
+10. Rapport de build production
+
+**Résultat**: Build production optimisé - **ILLISIBLE mais PERFORMANT**
+
+#### Option 4: Skills individuels
+
+Pour des opérations spécifiques :
+
+```
+static-site-optimizer:validate        # Validation uniquement
+static-site-optimizer:gdpr-responsive # RGPD/GDPR uniquement ⚠️
+static-site-optimizer:optimize-images # Images uniquement
 static-site-optimizer:minify          # Minification uniquement
-static-site-optimizer:compress        # Compression Brotli/Gzip (NOUVEAU!)
+static-site-optimizer:compress        # Pre-compression uniquement
 static-site-optimizer:pagespeed       # Audit PageSpeed uniquement
 ```
 
@@ -282,7 +361,9 @@ npm run update:html ./dist ./dist/images/optimization-report.json
 ├── .claude/
 │   ├── skills/
 │   │   └── static-site-optimizer/
-│   │       ├── optimize.md           # Skill principal (orchestration)
+│   │       ├── optimize.md           # Skill principal (choix interactif)
+│   │       ├── optimize-dev.md       # 🔧 Workflow DÉVELOPPEMENT
+│   │       ├── package-prod.md       # 🚀 Workflow PRODUCTION
 │   │       ├── gdpr-responsive.md    # RGPD/GDPR & Responsive Design ⚠️
 │   │       ├── validate.md           # Validation HTML/CSS/JS
 │   │       ├── minify.md             # Minification des assets
