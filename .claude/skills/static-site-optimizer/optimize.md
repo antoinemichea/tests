@@ -93,7 +93,7 @@ Based on their choice, invoke the appropriate skill:
 
 ## Workflow Details
 
-### DEVELOPMENT Workflow (8 Steps)
+### DEVELOPMENT Workflow (9 Steps)
 
 1. **Initial Analysis & Backup**
 2. **Code Validation** (HTML, CSS, JS)
@@ -102,9 +102,10 @@ Based on their choice, invoke the appropriate skill:
 5. **Basic Image Optimization** (lossless only, keep originals)
 6. **Accessibility Improvements** (WCAG AA)
 7. **SEO Structure** (meta tags, sitemap, robots.txt)
-8. **Development Report**
+8. **Performance Audit (Baseline)** (establish baseline metrics before PROD)
+9. **Development Report**
 
-**Output**: `{source}_dev_optimized/` with clean, readable, validated code
+**Output**: `{source}_dev_optimized/` with clean, readable, validated code + baseline performance metrics
 
 ### PRODUCTION Workflow (10 Steps)
 
@@ -168,7 +169,8 @@ Assistant: "I'll run both workflows..."
 | **JavaScript** | Formatted, readable | Minified, mangled, compressed |
 | **Pre-compression** | ❌ No .br/.gz files | ✅ Brotli + Gzip |
 | **File size** | Baseline | 70-90% smaller |
-| **PageSpeed score** | ~70-80 | 95-100 |
+| **PageSpeed audit** | ✅ Baseline (70-85) | ✅ Final (95-100) |
+| **Performance focus** | Code quality | Maximum speed |
 | **Editable** | ✅ Yes | ❌ No |
 | **Version control** | ✅ Commit to git | ❌ Do not commit |
 | **Use case** | Development | Deployment |
@@ -180,6 +182,8 @@ Assistant: "I'll run both workflows..."
 - ✅ GDPR compliance achieved (no Google Fonts, tracking flagged)
 - ✅ Accessibility score 90+
 - ✅ SEO structure in place
+- ✅ Performance baseline established (70-85 expected)
+- ✅ Baseline audit report generated
 - ✅ Code is readable and maintainable
 - ✅ Ready for continued development OR production workflow
 

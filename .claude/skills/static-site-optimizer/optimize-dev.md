@@ -23,7 +23,7 @@ Ask the user for:
 2. **Output directory**: Where to save optimized files (default: {source}_dev_optimized)
 3. **Backup**: Whether to create a backup (default: yes)
 
-## Development Workflow - 8 Steps
+## Development Workflow - 9 Steps
 
 ### Step 1: Initial Analysis and Backup
 
@@ -133,7 +133,41 @@ Ensure proper SEO foundation:
 - Add structured data (JSON-LD) placeholders
 - Verify heading hierarchy
 
-### Step 8: Development Report
+### Step 8: Performance Audit (Baseline)
+
+Invoke the `static-site-optimizer:pagespeed` skill to establish baseline metrics:
+
+**Why in DEV workflow:**
+- Identify performance issues early
+- Establish baseline scores before production
+- Guide optimization priorities
+- Detect problems before they reach production
+
+**Audit process:**
+- Run Lighthouse on local server
+- Analyze both mobile and desktop
+- Generate performance report
+- Identify low-hanging fruit improvements
+
+**Expected DEV scores (without minification/compression):**
+- Performance: 70-85 (baseline, will improve in PROD)
+- Accessibility: 90-100 (should be high)
+- Best Practices: 85-95
+- SEO: 95-100 (should be excellent)
+
+**Report includes:**
+- Core Web Vitals baseline
+- Recommendations for improvement
+- Issues to address before PROD
+- Validation that code structure is sound
+
+**Important notes:**
+- These are BASELINE scores
+- Lower performance is expected (no minification yet)
+- Focus on accessibility and SEO scores
+- Performance will jump to 95-100 in PROD workflow
+
+### Step 9: Development Report
 
 Generate a comprehensive report:
 
@@ -172,23 +206,52 @@ DEVELOPMENT OPTIMIZATION REPORT
   ✓ Viewport tags: 12 pages
   ✓ Media queries: Present
 
+📊 PERFORMANCE AUDIT (Baseline):
+  Mobile:
+    Performance:     78/100  (baseline)
+    Accessibility:   95/100  ✓
+    Best Practices:  90/100  ✓
+    SEO:            100/100  ✓
+
+  Desktop:
+    Performance:     85/100  (baseline)
+    Accessibility:   95/100  ✓
+    Best Practices:  90/100  ✓
+    SEO:            100/100  ✓
+
+  Core Web Vitals (baseline):
+    LCP: 2.8s (will improve in PROD)
+    FID: 35ms ✓
+    CLS: 0.05 ✓
+
+  ⚠ Performance Notes:
+    - Lower performance score expected (no minification)
+    - Will improve to 95-100 in PRODUCTION workflow
+    - Code structure is sound
+
 ===========================================
 CODE QUALITY: Excellent ✓
 GDPR COMPLIANCE: 95% ⚠ (manual review needed)
 ACCESSIBILITY: 95/100 ✓
-SEO: Ready ✓
+SEO: 100/100 ✓
+PERFORMANCE BASELINE: 78/100 (expected, will improve in PROD)
 ===========================================
 
 📁 Output: /path/to/output_dev_optimized
 📄 Validation report: validation-report.json
 📄 GDPR report: gdpr-report.json
+📄 PageSpeed baseline report: pagespeed-baseline.json
 
 NEXT STEPS FOR DEVELOPMENT:
 1. Review and test the optimized code
-2. Implement cookie consent banner for tracking
-3. Update privacy policy
-4. Continue development with clean, validated code
-5. When ready for production, run the PRODUCTION workflow
+2. Implement cookie consent banner for tracking scripts
+3. Update privacy policy to mention Bunny Fonts usage
+4. Address any PageSpeed recommendations if needed
+5. Continue development with clean, validated code
+6. Monitor baseline performance during development
+7. When ready for production, run the PRODUCTION workflow
+   → Performance will improve from ~78 to 95-100
+   → File sizes will reduce by 70-90%
 
 ⚠ IMPORTANT: This is the DEV version
    - Code is readable and maintainable

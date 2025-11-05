@@ -206,7 +206,7 @@ Claude vous demandera de choisir :
 static-site-optimizer:optimize-dev
 ```
 
-**Processus en 8 étapes :**
+**Processus en 9 étapes :**
 1. Analyse du répertoire et backup
 2. Validation du code (HTML, CSS, JS)
 3. Corrections automatiques des erreurs
@@ -214,9 +214,10 @@ static-site-optimizer:optimize-dev
 5. Optimisation basique des images (lossless uniquement)
 6. Améliorations accessibilité (WCAG AA)
 7. Structure SEO (meta tags, sitemap, robots.txt)
-8. Rapport de développement
+8. **Audit PageSpeed (Baseline)** 📊 - Scores attendus: 70-85 performance, 90-100 accessibilité/SEO
+9. Rapport de développement
 
-**Résultat**: Code propre, validé, conforme - **LISIBLE et MODIFIABLE**
+**Résultat**: Code propre, validé, conforme - **LISIBLE et MODIFIABLE** + baseline performance établi
 
 #### Option 3: Workflow PRODUCTION direct
 
