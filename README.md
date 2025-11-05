@@ -68,6 +68,23 @@ Système complet de skills Claude pour optimiser des sites web statiques et atte
 - Extraction et inline du CSS critique
 - Optimisation du chargement des ressources
 
+### 📦 Pre-Compression (NOUVEAU)
+- **Compression Brotli** (niveau 11 - qualité maximale)
+  - 75-85% de réduction de taille
+  - Support navigateurs modernes
+  - Meilleure compression que Gzip
+- **Compression Gzip** (niveau 9 - compression maximale)
+  - 65-75% de réduction de taille
+  - Fallback universel
+  - Compatible tous navigateurs
+- **Traitement des fichiers texte:**
+  - HTML, CSS, JavaScript
+  - JSON, SVG, XML
+  - Source maps, manifests
+- **Compression additive** (fichiers originaux préservés)
+- **Configuration serveur** automatique
+- **Zéro overhead runtime** (pré-compressé au build)
+
 ### 📊 Audit de performance
 - Intégration Google PageSpeed Insights
 - Analyse Lighthouse (mobile et desktop)
@@ -137,9 +154,10 @@ Claude vous guidera à travers le processus complet :
 4. **RGPD/GDPR Compliance & Responsive Design** ⚠️
 5. Optimisation des images
 6. Minification des assets
-7. Audit PageSpeed
-8. Améliorations itératives
-9. Rapport final
+7. **Pre-Compression (Brotli + Gzip)** 📦
+8. Audit PageSpeed
+9. Améliorations itératives
+10. Rapport final
 
 #### 2. Skills individuels
 
@@ -150,6 +168,7 @@ static-site-optimizer:gdpr-responsive # RGPD/GDPR + Responsive (IMPORTANT!)
 static-site-optimizer:validate        # Validation HTML/CSS/JS uniquement
 static-site-optimizer:optimize-images # Optimisation images uniquement
 static-site-optimizer:minify          # Minification uniquement
+static-site-optimizer:compress        # Compression Brotli/Gzip (NOUVEAU!)
 static-site-optimizer:pagespeed       # Audit PageSpeed uniquement
 ```
 
@@ -201,6 +220,29 @@ node .claude/scripts/html-updater.js ./dist ./dist/images/optimization-report.js
 # - Rapport des modifications
 ```
 
+#### 📦 Pre-Compression Brotli/Gzip (NOUVEAU!)
+
+```bash
+# Compresser tous les fichiers texte pour le packaging
+node .claude/scripts/compress-assets.js ./dist
+
+# Ou avec le script bash
+bash .claude/scripts/compress-assets.sh ./dist
+
+# Résultat :
+# - Fichiers .br (Brotli niveau 11) générés
+# - Fichiers .gz (Gzip niveau 9) générés
+# - Fichiers originaux préservés
+# - Rapport de compression en JSON
+# - 75-85% de réduction (Brotli)
+# - 65-75% de réduction (Gzip)
+
+# Exemple de résultat:
+# index.html      45 KB
+# index.html.br    9 KB  (-80%)
+# index.html.gz   13 KB  (-71%)
+```
+
 ### Via npm scripts
 
 ```bash
@@ -219,6 +261,9 @@ npm run validate:js
 npm run minify:html
 npm run minify:css
 npm run minify:js
+
+# Pre-Compression (NOUVEAU!)
+npm run compress ./dist
 
 # Audit Lighthouse
 npm run audit:lighthouse
@@ -241,10 +286,13 @@ npm run update:html ./dist ./dist/images/optimization-report.json
 │   │       ├── gdpr-responsive.md    # RGPD/GDPR & Responsive Design ⚠️
 │   │       ├── validate.md           # Validation HTML/CSS/JS
 │   │       ├── minify.md             # Minification des assets
+│   │       ├── compress.md           # Pre-Compression Brotli/Gzip 📦
 │   │       ├── optimize-images.md    # Optimisation des images
 │   │       └── pagespeed.md          # Audit PageSpeed Insights
 │   └── scripts/
 │       ├── gdpr-optimizer.js         # Script conformité RGPD ⚠️
+│       ├── compress-assets.js        # Script compression Brotli/Gzip 📦
+│       ├── compress-assets.sh        # Script compression (bash) 📦
 │       ├── image-optimizer.js        # Script d'optimisation d'images
 │       ├── html-updater.js           # Script de mise à jour HTML
 │       └── install-tools.sh          # Script d'installation

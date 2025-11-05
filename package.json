@@ -6,6 +6,8 @@
     "optimize:images": "node .claude/scripts/image-optimizer.js",
     "update:html": "node .claude/scripts/html-updater.js",
     "gdpr:optimize": "node .claude/scripts/gdpr-optimizer.js",
+    "compress": "node .claude/scripts/compress-assets.js",
+    "compress:bash": "bash .claude/scripts/compress-assets.sh",
     "install:tools": "bash .claude/scripts/install-tools.sh",
     "validate:html": "html-validator --file=**/*.html --format=text",
     "validate:css": "stylelint '**/*.css'",
@@ -26,8 +28,13 @@
     "webp",
     "avif",
     "minification",
+    "compression",
+    "brotli",
+    "gzip",
     "lighthouse",
-    "pagespeed"
+    "pagespeed",
+    "gdpr",
+    "rgpd"
   ],
   "author": "",
   "license": "MIT",

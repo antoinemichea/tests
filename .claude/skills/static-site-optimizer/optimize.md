@@ -92,7 +92,33 @@ Invoke the `static-site-optimizer:minify` skill to:
 - Inline critical CSS for above-the-fold content
 - Defer non-critical JavaScript
 
-### Step 7: Performance Optimizations
+### Step 7: Pre-Compression (Packaging Phase)
+Invoke the `static-site-optimizer:compress` skill to:
+- **Generate Brotli-compressed versions** (.br files)
+  - Quality level 11 (maximum compression)
+  - 75-85% size reduction typical
+  - Supported by all modern browsers
+- **Generate Gzip-compressed versions** (.gz files)
+  - Quality level 9 (maximum compression)
+  - 65-75% size reduction typical
+  - Universal browser fallback
+- **Process all text-based files:**
+  - HTML, CSS, JavaScript
+  - JSON, SVG, XML
+  - Source maps, manifests
+- **Maintain original files** (compression is additive)
+- **Generate server configuration** files
+- **Create compression report** with statistics
+
+**IMPORTANT**: This step only creates compressed versions for production. Original files remain unchanged.
+
+**Expected Results:**
+- All text files have .br and .gz companions
+- Massive bandwidth savings (70-80% average)
+- Zero runtime overhead (pre-compressed)
+- Server automatically serves best format
+
+### Step 8: Performance Optimizations
 Apply advanced optimizations:
 - Add resource hints (preconnect, prefetch, dns-prefetch)
 - Add preconnect for Bunny Fonts
