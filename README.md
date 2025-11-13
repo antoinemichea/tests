@@ -473,6 +473,382 @@ static-site-optimizer:pagespeed
 # 6. Répéter jusqu'à satisfaction
 ```
 
+### 4. Cas concret : Site statique avec Git (Workflow complet)
+
+Ce scénario montre comment optimiser un site statique hébergé sur Git, de la phase de développement au déploiement en production.
+
+#### 📋 Contexte
+Vous avez un site statique sur GitHub/GitLab et vous voulez :
+- Améliorer la qualité du code
+- Assurer la conformité RGPD
+- Optimiser les performances
+- Déployer une version production optimisée
+
+#### 🚀 Étapes complètes
+
+```bash
+# ============================================
+# PHASE 1 : SETUP ET PRÉPARATION
+# ============================================
+
+# 1. Cloner le dépôt Git de votre site statique
+git clone https://github.com/votre-username/mon-site-web.git
+cd mon-site-web
+
+# 2. Vérifier la structure du projet
+ls -la
+# Exemple : index.html, css/, js/, images/, etc.
+
+# 3. Copier les skills et scripts d'optimisation dans le projet
+# (Si ce n'est pas déjà fait)
+cp -r /chemin/vers/.claude ./.claude
+cp package.json .
+cp .eslintrc.json .
+cp .stylelintrc.json .
+
+# 4. Installer les dépendances
+npm install
+
+# 5. Créer une branche de développement pour l'optimisation
+git checkout -b feature/optimize-site
+
+# ============================================
+# PHASE 2 : OPTIMISATION DÉVELOPPEMENT
+# ============================================
+
+# 6. Dans Claude Code, lancer le workflow DÉVELOPPEMENT
+# Taper dans Claude Code :
+static-site-optimizer:optimize-dev
+
+# Claude va :
+# - Analyser votre site (index.html, css/, js/, images/, etc.)
+# - Créer un backup automatique
+# - Valider HTML/CSS/JS et corriger les erreurs
+# - Remplacer Google Fonts par Bunny Fonts (RGPD)
+# - Optimiser les images (lossless)
+# - Améliorer l'accessibilité (WCAG AA)
+# - Ajouter/optimiser les meta tags SEO
+# - Vérifier/créer le favicon
+# - Lancer un audit PageSpeed baseline
+
+# 7. Vérifier les changements
+git status
+git diff
+
+# Vous devriez voir :
+# - Modifications des fichiers HTML (Bunny Fonts, favicon, meta tags)
+# - Corrections CSS/JS
+# - Nouveaux fichiers favicon (favicon.svg, *.png, etc.)
+# - Images optimisées (lossless)
+
+# 8. Tester le site localement
+npm run serve
+# Ouvrir http://localhost:8000 dans le navigateur
+
+# 9. Vérifier les scores PageSpeed
+# Dans Claude Code :
+static-site-optimizer:pagespeed
+
+# Scores attendus après DEV :
+# - Performance : 70-85
+# - Accessibilité : 90-100
+# - Bonnes pratiques : 90-100
+# - SEO : 90-100
+
+# 10. Commiter les changements DEV (code source optimisé)
+git add .
+git commit -m "chore: optimize site - DEV workflow
+
+- Fix HTML/CSS/JS validation errors
+- Replace Google Fonts with Bunny Fonts (GDPR compliant)
+- Add missing favicon (SVG + variants)
+- Improve accessibility (WCAG AA)
+- Optimize SEO meta tags
+- Baseline PageSpeed audit: 75/100"
+
+# 11. Pousser la branche de développement
+git push -u origin feature/optimize-site
+
+# 12. Créer une Pull Request
+# Sur GitHub/GitLab, créer une PR de feature/optimize-site vers main
+# Faire reviewer les changements par l'équipe
+# Merger après validation
+
+# ============================================
+# PHASE 3 : BUILD PRODUCTION
+# ============================================
+
+# 13. Basculer sur la branche principale (après merge)
+git checkout main
+git pull origin main
+
+# 14. Créer une branche pour le build de production
+git checkout -b release/v1.0.0-optimized
+
+# 15. Dans Claude Code, lancer le workflow PRODUCTION
+static-site-optimizer:package-prod
+
+# Claude va créer un répertoire de production (ex: dist/) avec :
+# - HTML minifié (70% plus petit)
+# - CSS minifié et purgé (77% plus petit)
+# - JavaScript minifié et tree-shaken (62% plus petit)
+# - Images en AVIF + WebP + responsive variants (90% plus petit)
+# - Pre-compression Brotli (.br) et Gzip (.gz)
+# - Picture elements avec lazy loading
+# - Optimisations performance maximales
+
+# Structure après build :
+# dist/
+# ├── index.html (minifié)
+# ├── index.html.br (Brotli)
+# ├── index.html.gz (Gzip)
+# ├── css/
+# │   ├── style.min.css
+# │   ├── style.min.css.br
+# │   └── style.min.css.gz
+# ├── js/
+# │   ├── app.min.js
+# │   ├── app.min.js.br
+# │   └── app.min.js.gz
+# └── images/
+#     ├── hero-320w.avif
+#     ├── hero-640w.avif
+#     ├── hero-320w.webp
+#     └── hero-1024w.jpg
+
+# 16. Vérifier les scores PageSpeed production
+static-site-optimizer:pagespeed
+
+# Scores attendus après PROD :
+# - Performance : 95-100 ✅
+# - Accessibilité : 95-100 ✅
+# - Bonnes pratiques : 95-100 ✅
+# - SEO : 95-100 ✅
+
+# ============================================
+# PHASE 4 : DÉPLOIEMENT
+# ============================================
+
+# 17. NE PAS commiter le dossier dist/ dans Git
+# Ajouter au .gitignore si ce n'est pas déjà fait
+echo "dist/" >> .gitignore
+echo "*_backup/" >> .gitignore
+echo "*_dev_optimized/" >> .gitignore
+echo "*_prod/" >> .gitignore
+
+git add .gitignore
+git commit -m "chore: add optimization directories to gitignore"
+
+# 18. Déployer le contenu de dist/ vers votre hébergement
+
+# Option A : Déploiement manuel (FTP/SFTP)
+# Uploader le contenu de dist/ vers votre serveur web
+
+# Option B : Netlify
+netlify deploy --prod --dir=dist
+
+# Option C : Vercel
+vercel --prod dist
+
+# Option D : GitHub Pages (avec GitHub Actions)
+# Créer .github/workflows/deploy.yml :
+cat > .github/workflows/deploy.yml << 'EOF'
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production
+        run: |
+          # Lancer le script de build (adapter selon votre setup)
+          npm run build:prod
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+EOF
+
+# Option E : Serveur personnalisé (SSH + rsync)
+rsync -avz --delete dist/ user@votre-serveur.com:/var/www/html/
+
+# 19. Configurer le serveur pour utiliser les fichiers pre-compressés
+
+# Pour Nginx, ajouter dans la config :
+cat > nginx-brotli.conf << 'EOF'
+# Brotli
+brotli on;
+brotli_static on;
+brotli_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;
+
+# Gzip (fallback)
+gzip on;
+gzip_static on;
+gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;
+EOF
+
+# Pour Apache, ajouter dans .htaccess :
+cat > dist/.htaccess << 'EOF'
+# Serve pre-compressed Brotli files
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP:Accept-Encoding} br
+  RewriteCond %{REQUEST_FILENAME}.br -f
+  RewriteRule ^(.*)$ $1.br [L]
+</IfModule>
+
+# Serve pre-compressed Gzip files
+<IfModule mod_rewrite.c>
+  RewriteCond %{HTTP:Accept-Encoding} gzip
+  RewriteCond %{REQUEST_FILENAME}.gz -f
+  RewriteRule ^(.*)$ $1.gz [L]
+</IfModule>
+EOF
+
+# 20. Vérifier le déploiement
+curl -I https://votre-site.com
+# Vérifier les headers : Content-Encoding: br ou gzip
+
+# 21. Tester le site en production
+# Ouvrir https://votre-site.com
+# Vérifier que tout fonctionne
+
+# 22. Lancer un audit PageSpeed final sur le site en production
+# Aller sur https://pagespeed.web.dev/
+# Entrer l'URL de votre site
+# Vérifier les scores 95-100 ✅
+
+# ============================================
+# PHASE 5 : MAINTENANCE ET ITÉRATION
+# ============================================
+
+# 23. Pour chaque mise à jour du site :
+
+# A. Modifications de développement (contenu, features)
+git checkout main
+git pull
+git checkout -b feature/nouvelle-fonctionnalite
+
+# Faire vos modifications...
+
+# Re-lancer le workflow DEV pour vérifier
+static-site-optimizer:optimize-dev
+
+git add .
+git commit -m "feat: ajouter nouvelle fonctionnalité"
+git push -u origin feature/nouvelle-fonctionnalite
+# Créer PR, merger
+
+# B. Rebuild production
+git checkout main
+git pull
+
+# Re-lancer le workflow PROD
+static-site-optimizer:package-prod
+
+# Redéployer dist/
+netlify deploy --prod --dir=dist
+# ou
+rsync -avz --delete dist/ user@serveur:/var/www/html/
+
+# C. Monitoring continu
+# Configurer des audits réguliers avec Lighthouse CI
+npm install -g @lhci/cli
+
+# Créer lighthouserc.json
+cat > lighthouserc.json << 'EOF'
+{
+  "ci": {
+    "collect": {
+      "url": ["https://votre-site.com"],
+      "numberOfRuns": 3
+    },
+    "assert": {
+      "preset": "lighthouse:recommended",
+      "assertions": {
+        "categories:performance": ["error", {"minScore": 0.95}],
+        "categories:accessibility": ["error", {"minScore": 0.95}],
+        "categories:seo": ["error", {"minScore": 0.95}]
+      }
+    }
+  }
+}
+EOF
+
+# Lancer l'audit
+lhci autorun
+
+# ============================================
+# RÉSUMÉ DU WORKFLOW GIT
+# ============================================
+
+# Sources (à commiter dans Git) :
+# - main/ ou src/ : Code source optimisé DEV
+# - .claude/ : Skills et scripts d'optimisation
+# - Configuration : package.json, .eslintrc.json, etc.
+
+# Build (à NE PAS commiter dans Git) :
+# - dist/ : Build production (déployé, non versionné)
+# - *_backup/ : Backups automatiques
+# - *_dev_optimized/ : Sorties DEV temporaires
+# - *_prod/ : Sorties PROD temporaires
+
+# Branches Git recommandées :
+# - main : Code source optimisé et validé
+# - feature/* : Développement de nouvelles features
+# - release/* : Tags de versions déployées
+# - hotfix/* : Corrections urgentes en production
+
+# Tags Git pour les releases :
+git tag -a v1.0.0 -m "Release v1.0.0 - Site optimisé"
+git push origin v1.0.0
+```
+
+#### 🎯 Résultat final
+
+Après ce workflow complet, vous obtenez :
+
+**✅ Repository Git organisé :**
+- Code source propre et validé dans `main`
+- Historique clair des optimisations
+- Séparation source (Git) / build (déployé)
+
+**✅ Site optimisé en développement :**
+- Code lisible et maintenable
+- Conforme RGPD (Bunny Fonts)
+- Accessibilité WCAG AA
+- SEO optimisé
+- Baseline performance établi
+
+**✅ Site optimisé en production :**
+- PageSpeed scores 95-100
+- Réduction de 70-90% de la taille des fichiers
+- Images en formats modernes (AVIF + WebP)
+- Pre-compression (Brotli + Gzip)
+- Core Web Vitals au vert
+
+**✅ Workflow reproductible :**
+- Automatisable via CI/CD
+- Testable à chaque commit
+- Déployable en un clic
+- Maintenable sur le long terme
+
 ## 📊 Exemple de résultats
 
 ### Avant optimisation
