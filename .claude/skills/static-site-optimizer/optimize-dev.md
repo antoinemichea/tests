@@ -133,7 +133,101 @@ Ensure proper SEO foundation:
 - Add structured data (JSON-LD) placeholders
 - Verify heading hierarchy
 
-### Step 8: Performance Audit (Baseline)
+### Step 8: Favicon Verification & Creation
+
+**Check for existing favicon:**
+- Look for `favicon.ico` in root directory
+- Look for `favicon.svg` in root directory
+- Look for `favicon.png` in root directory
+- Check HTML `<link rel="icon">` declarations
+
+**If no favicon exists, create one:**
+
+**Option 1: Generate SVG Favicon (Recommended)**
+Create a modern SVG favicon with the site's initials or logo:
+
+```svg
+<!-- Example: Simple letter favicon -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" fill="#2563eb" rx="20"/>
+  <text x="50" y="70" font-size="60" font-weight="bold"
+        text-anchor="middle" fill="white" font-family="Arial, sans-serif">
+    S
+  </text>
+</svg>
+```
+
+**Option 2: Generate Multiple Sizes (Complete)**
+For maximum compatibility, create:
+- `favicon.svg` (modern browsers, scalable)
+- `favicon.ico` (legacy browsers, 32x32)
+- `apple-touch-icon.png` (180x180, iOS)
+- `favicon-16x16.png`
+- `favicon-32x32.png`
+
+**Update HTML with favicon links:**
+```html
+<head>
+  <!-- Modern browsers (SVG) -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- Fallback for older browsers -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+  <!-- Apple devices -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <!-- Legacy (automatic in root) -->
+  <link rel="shortcut icon" href="/favicon.ico">
+</head>
+```
+
+**Automated generation script:**
+Use the `generate-favicon.js` script to create a basic SVG favicon:
+
+```javascript
+// Prompts for:
+// 1. Site name/initials (e.g., "MS" for "My Site")
+// 2. Primary color (hex code)
+// 3. Text color (default: white)
+// Generates:
+// - favicon.svg (optimized)
+// - PNG variants (using sharp)
+// - favicon.ico (multi-size)
+// - Updates HTML files
+```
+
+**If favicon exists:**
+- Verify it's properly linked in HTML
+- Add missing favicon declarations
+- Ensure proper MIME types
+- Test loading in browser
+
+**Benefits of SVG favicon:**
+- ✅ Scalable (perfect on any resolution)
+- ✅ Small file size (~500 bytes)
+- ✅ Easy to edit
+- ✅ Supports dark mode (via CSS media queries)
+- ✅ Modern and crisp on retina displays
+
+**Dark mode support (optional):**
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <style>
+    rect { fill: #2563eb; }
+    text { fill: white; }
+    @media (prefers-color-scheme: dark) {
+      rect { fill: #60a5fa; }
+    }
+  </style>
+  <rect width="100" height="100" rx="20"/>
+  <text x="50" y="70" font-size="60" font-weight="bold"
+        text-anchor="middle" font-family="Arial, sans-serif">S</text>
+</svg>
+```
+
+### Step 9: Performance Audit (Baseline)
 
 Invoke the `static-site-optimizer:pagespeed` skill to establish baseline metrics:
 

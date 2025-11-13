@@ -93,7 +93,7 @@ Based on their choice, invoke the appropriate skill:
 
 ## Workflow Details
 
-### DEVELOPMENT Workflow (9 Steps)
+### DEVELOPMENT Workflow (10 Steps)
 
 1. **Initial Analysis & Backup**
 2. **Code Validation** (HTML, CSS, JS)
@@ -102,8 +102,9 @@ Based on their choice, invoke the appropriate skill:
 5. **Basic Image Optimization** (lossless only, keep originals)
 6. **Accessibility Improvements** (WCAG AA)
 7. **SEO Structure** (meta tags, sitemap, robots.txt)
-8. **Performance Audit (Baseline)** (establish baseline metrics before PROD)
-9. **Development Report**
+8. **Favicon Verification & Creation** (SVG with dark mode + PNG/ICO variants)
+9. **Performance Audit (Baseline)** (establish baseline metrics before PROD)
+10. **Development Report**
 
 **Output**: `{source}_dev_optimized/` with clean, readable, validated code + baseline performance metrics
 

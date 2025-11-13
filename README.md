@@ -206,7 +206,7 @@ Claude vous demandera de choisir :
 static-site-optimizer:optimize-dev
 ```
 
-**Processus en 9 étapes :**
+**Processus en 10 étapes :**
 1. Analyse du répertoire et backup
 2. Validation du code (HTML, CSS, JS)
 3. Corrections automatiques des erreurs
@@ -214,8 +214,9 @@ static-site-optimizer:optimize-dev
 5. Optimisation basique des images (lossless uniquement)
 6. Améliorations accessibilité (WCAG AA)
 7. Structure SEO (meta tags, sitemap, robots.txt)
-8. **Audit PageSpeed (Baseline)** 📊 - Scores attendus: 70-85 performance, 90-100 accessibilité/SEO
-9. Rapport de développement
+8. **Vérification et création Favicon** 🎨 - SVG avec support dark mode + variantes PNG/ICO
+9. **Audit PageSpeed (Baseline)** 📊 - Scores attendus: 70-85 performance, 90-100 accessibilité/SEO
+10. Rapport de développement
 
 **Résultat**: Code propre, validé, conforme - **LISIBLE et MODIFIABLE** + baseline performance établi
 
@@ -269,6 +270,35 @@ node .claude/scripts/gdpr-optimizer.js ./dist ./dist/assets
 # - Détection et signalement des scripts de tracking
 # - Ajout des viewport meta tags
 # - Rapport de conformité RGPD en JSON
+```
+
+#### 🎨 Génération de Favicon (NOUVEAU!)
+
+```bash
+# Générer un favicon SVG avec variantes PNG/ICO
+node .claude/scripts/generate-favicon.js
+
+# Le script est interactif et demande :
+# - Initiales du site (1-2 caractères, ex: "MS")
+# - Couleur principale (hex, ex: #2563eb)
+# - Couleur du texte (default: #ffffff)
+# - Support dark mode (oui/non)
+# - Répertoire de sortie (default: répertoire courant)
+
+# Résultat :
+# - favicon.svg (scalable, ~500 bytes)
+# - favicon-16x16.png
+# - favicon-32x32.png
+# - apple-touch-icon.png (180x180, iOS)
+# - favicon.ico (legacy browsers)
+# - Mise à jour automatique des fichiers HTML
+
+# Avantages du favicon SVG :
+# ✅ Scalable (parfait sur toutes résolutions)
+# ✅ Petit fichier (~500 bytes)
+# ✅ Facile à éditer
+# ✅ Support dark mode (via CSS media queries)
+# ✅ Moderne et net sur écrans retina
 ```
 
 #### Optimisation des images
@@ -373,6 +403,7 @@ npm run update:html ./dist ./dist/images/optimization-report.json
 │   │       └── pagespeed.md          # Audit PageSpeed Insights
 │   └── scripts/
 │       ├── gdpr-optimizer.js         # Script conformité RGPD ⚠️
+│       ├── generate-favicon.js       # Génération favicon SVG + variantes 🎨
 │       ├── compress-assets.js        # Script compression Brotli/Gzip 📦
 │       ├── compress-assets.sh        # Script compression (bash) 📦
 │       ├── image-optimizer.js        # Script d'optimisation d'images
