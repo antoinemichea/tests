@@ -2,6 +2,29 @@
 
 Système complet de skills Claude pour optimiser des sites web statiques et atteindre des scores de performance proches de 100% sur Google PageSpeed Insights.
 
+## 📚 Table des matières
+
+- [RGPD/GDPR - Priorité absolue](#️-rgpdgdpr---priorité-absolue)
+- [Deux Workflows Distincts](#-deux-workflows-distincts)
+- [Objectifs](#-objectifs)
+- [Fonctionnalités](#-fonctionnalités)
+- [🚀 Installation](#-installation)
+  - [Étape 1 : Installer Claude Code](#étape-1--installer-claude-code)
+  - [Étape 2 : Installer les Skills](#étape-2--installer-les-skills-doptimisation)
+  - [Étape 3 : Vérifier l'installation](#étape-3--vérifier-linstallation-des-skills)
+  - [Étape 4 : Tester l'installation](#étape-4--tester-linstallation)
+  - [Étape 5 : Configuration du projet](#étape-5--configuration-du-projet)
+  - [Étape 6 : Installer les outils système](#étape-6--installer-les-outils-doptimisation)
+- [📖 Utilisation](#-utilisation)
+- [🔧 Workflow typique](#-workflow-typique)
+  - [Cas concret : Site statique avec Git](#4-cas-concret--site-statique-avec-git-workflow-complet)
+- [📊 Exemple de résultats](#-exemple-de-résultats)
+- [📁 Structure du projet](#-structure-du-projet)
+- [🔍 Core Web Vitals](#-core-web-vitals)
+- [🌐 Support navigateurs](#-support-navigateurs)
+- [🐛 Dépannage](#-dépannage)
+- [✨ Fonctionnalités futures](#-fonctionnalités-futures)
+
 ## ⚠️ RGPD/GDPR - PRIORITÉ ABSOLUE
 
 **Ce système garantit une conformité totale avec le RGPD/GDPR :**
@@ -146,12 +169,370 @@ Ce système propose **DEUX workflows spécialisés** pour les différentes phase
 
 ## 🚀 Installation
 
-### Prérequis
+### Étape 1 : Installer Claude Code
 
-- Node.js 18+ et npm 9+
-- Système Linux, macOS, ou Windows WSL
+Claude Code est le CLI officiel d'Anthropic pour interagir avec Claude via la ligne de commande.
 
-### Installation automatique
+#### Installation de Claude Code
+
+```bash
+# Option 1 : Via npm (recommandé)
+npm install -g @anthropic-ai/claude-code
+
+# Option 2 : Via Homebrew (macOS)
+brew install claude-code
+
+# Option 3 : Téléchargement direct
+# Visitez : https://github.com/anthropics/claude-code/releases
+```
+
+#### Configuration initiale de Claude Code
+
+```bash
+# 1. Configurer votre clé API Anthropic
+# Obtenir une clé API sur : https://console.anthropic.com/
+export ANTHROPIC_API_KEY="votre_clé_api_ici"
+
+# Ou ajouter dans votre ~/.bashrc ou ~/.zshrc
+echo 'export ANTHROPIC_API_KEY="votre_clé_api_ici"' >> ~/.bashrc
+
+# 2. Vérifier l'installation
+claude --version
+
+# 3. Tester Claude Code
+claude
+# Vous devriez voir le prompt de Claude Code
+```
+
+### Étape 2 : Installer les Skills d'optimisation
+
+Il existe **3 méthodes** pour installer ces skills dans votre projet.
+
+#### Méthode 1 : Cloner depuis Git (Recommandé)
+
+Si vous avez accès au dépôt contenant ces skills :
+
+```bash
+# 1. Cloner le dépôt des skills
+git clone https://github.com/votre-username/static-site-optimizer-skills.git
+
+# 2. Copier les skills dans votre projet
+cd votre-projet-web
+cp -r /chemin/vers/static-site-optimizer-skills/.claude ./.claude
+
+# 3. Copier les fichiers de configuration
+cp /chemin/vers/static-site-optimizer-skills/package.json ./
+cp /chemin/vers/static-site-optimizer-skills/.eslintrc.json ./
+cp /chemin/vers/static-site-optimizer-skills/.stylelintrc.json ./
+cp /chemin/vers/static-site-optimizer-skills/postcss.config.js ./
+cp /chemin/vers/static-site-optimizer-skills/purgecss.config.js ./
+
+# 4. Vérifier la structure
+ls -la .claude/
+# Vous devriez voir :
+# .claude/skills/static-site-optimizer/
+# .claude/scripts/
+```
+
+#### Méthode 2 : Installation manuelle
+
+Si vous créez les skills à partir de zéro :
+
+```bash
+# 1. Créer la structure des répertoires
+cd votre-projet-web
+mkdir -p .claude/skills/static-site-optimizer
+mkdir -p .claude/scripts
+
+# 2. Créer les fichiers de skills
+# Copier le contenu de chaque skill depuis la documentation
+touch .claude/skills/static-site-optimizer/optimize.md
+touch .claude/skills/static-site-optimizer/optimize-dev.md
+touch .claude/skills/static-site-optimizer/package-prod.md
+touch .claude/skills/static-site-optimizer/validate.md
+touch .claude/skills/static-site-optimizer/gdpr-responsive.md
+touch .claude/skills/static-site-optimizer/optimize-images.md
+touch .claude/skills/static-site-optimizer/minify.md
+touch .claude/skills/static-site-optimizer/compress.md
+touch .claude/skills/static-site-optimizer/pagespeed.md
+
+# 3. Créer les scripts utilitaires
+touch .claude/scripts/gdpr-optimizer.js
+touch .claude/scripts/generate-favicon.js
+touch .claude/scripts/compress-assets.js
+touch .claude/scripts/compress-assets.sh
+touch .claude/scripts/image-optimizer.js
+touch .claude/scripts/html-updater.js
+touch .claude/scripts/install-tools.sh
+
+# 4. Rendre les scripts exécutables
+chmod +x .claude/scripts/*.sh
+chmod +x .claude/scripts/*.js
+```
+
+#### Méthode 3 : Installation via package (si disponible)
+
+```bash
+# Si les skills sont packagés en tant que module npm
+cd votre-projet-web
+npm install --save-dev static-site-optimizer-skills
+
+# Les skills seront installés dans node_modules/
+# Créer un lien symbolique
+ln -s node_modules/static-site-optimizer-skills/.claude ./.claude
+```
+
+### Étape 3 : Vérifier l'installation des skills
+
+```bash
+# 1. Vérifier la structure des fichiers
+tree .claude/
+# Ou
+find .claude -type f
+
+# Structure attendue :
+# .claude/
+# ├── skills/
+# │   └── static-site-optimizer/
+# │       ├── optimize.md
+# │       ├── optimize-dev.md
+# │       ├── package-prod.md
+# │       ├── validate.md
+# │       ├── gdpr-responsive.md
+# │       ├── optimize-images.md
+# │       ├── minify.md
+# │       ├── compress.md
+# │       └── pagespeed.md
+# └── scripts/
+#     ├── gdpr-optimizer.js
+#     ├── generate-favicon.js
+#     ├── compress-assets.js
+#     ├── compress-assets.sh
+#     ├── image-optimizer.js
+#     ├── html-updater.js
+#     └── install-tools.sh
+
+# 2. Vérifier que les skills sont reconnus par Claude Code
+cd votre-projet-web
+claude
+
+# Dans Claude Code, taper :
+/skills
+
+# Vous devriez voir la liste des skills disponibles :
+# - static-site-optimizer:optimize
+# - static-site-optimizer:optimize-dev
+# - static-site-optimizer:package-prod
+# - etc.
+```
+
+### Étape 4 : Tester l'installation
+
+```bash
+# 1. Lancer Claude Code dans votre projet
+cd votre-projet-web
+claude
+
+# 2. Tester un skill simple
+# Dans Claude Code, taper :
+static-site-optimizer:validate
+
+# Claude devrait :
+# - Reconnaître le skill
+# - Commencer l'analyse de votre site
+# - Valider HTML/CSS/JS
+
+# 3. Si tout fonctionne, vous êtes prêt !
+# Sinon, vérifier les erreurs et la structure des fichiers
+```
+
+### Étape 5 : Configuration du projet
+
+Après installation des skills, configurer votre projet :
+
+```bash
+# 1. Initialiser package.json si nécessaire
+npm init -y
+
+# 2. Ajouter les dépendances requises
+npm install --save-dev \
+  sharp \
+  cheerio \
+  terser \
+  cssnano \
+  postcss \
+  autoprefixer \
+  purgecss \
+  html-minifier \
+  lighthouse \
+  eslint \
+  stylelint
+
+# 3. Créer le fichier .gitignore
+cat > .gitignore << 'EOF'
+# Node
+node_modules/
+npm-debug.log
+package-lock.json
+
+# Optimization outputs (ne pas commiter)
+dist/
+*_backup/
+*_dev_optimized/
+*_prod/
+*.br
+*.gz
+
+# Lighthouse reports
+lighthouse-report-*.html
+lighthouse-report-*.json
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+EOF
+
+# 4. Créer les fichiers de configuration ESLint
+cat > .eslintrc.json << 'EOF'
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-console": "warn",
+    "no-unused-vars": "warn"
+  }
+}
+EOF
+
+# 5. Créer le fichier de configuration Stylelint
+cat > .stylelintrc.json << 'EOF'
+{
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "color-hex-length": "short",
+    "declaration-block-no-duplicate-properties": true,
+    "no-duplicate-selectors": true
+  }
+}
+EOF
+```
+
+### 📋 Structure finale du projet
+
+Après installation complète, votre projet devrait ressembler à :
+
+```
+votre-projet-web/
+├── .claude/                          # Skills et scripts d'optimisation
+│   ├── skills/
+│   │   └── static-site-optimizer/   # Tous les skills (9 fichiers .md)
+│   └── scripts/                     # Scripts utilitaires (7 fichiers)
+├── .gitignore                       # Ignorer dist/, *_backup/, etc.
+├── .eslintrc.json                   # Configuration ESLint
+├── .stylelintrc.json                # Configuration Stylelint
+├── postcss.config.js                # Configuration PostCSS
+├── purgecss.config.js               # Configuration PurgeCSS
+├── package.json                     # Dépendances du projet
+├── index.html                       # Votre site web
+├── css/
+│   └── style.css
+├── js/
+│   └── app.js
+└── images/
+    └── *.jpg, *.png
+```
+
+### 🔍 Dépannage de l'installation
+
+#### Les skills ne sont pas reconnus
+
+```bash
+# Vérifier que le répertoire .claude existe
+ls -la .claude/
+
+# Vérifier les permissions
+chmod -R u+rw .claude/
+
+# Relancer Claude Code dans le bon répertoire
+cd votre-projet-web
+claude
+```
+
+#### Erreur "Skill not found"
+
+```bash
+# Vérifier l'exactitude des noms de fichiers
+ls .claude/skills/static-site-optimizer/
+
+# Les fichiers doivent avoir l'extension .md
+# Exemple : optimize.md (pas optimize.txt)
+
+# Vérifier le contenu du fichier
+head -n 5 .claude/skills/static-site-optimizer/optimize.md
+# Devrait commencer par : # Static Site Optimizer...
+```
+
+#### Scripts ne s'exécutent pas
+
+```bash
+# Vérifier les permissions d'exécution
+ls -l .claude/scripts/
+
+# Ajouter les permissions si nécessaire
+chmod +x .claude/scripts/*.sh
+chmod +x .claude/scripts/*.js
+
+# Vérifier le shebang dans les scripts
+head -n 1 .claude/scripts/generate-favicon.js
+# Devrait être : #!/usr/bin/env node
+```
+
+### 🎓 Tutoriel : Premier usage après installation
+
+```bash
+# 1. Naviguer vers votre projet
+cd mon-site-web
+
+# 2. Lancer Claude Code
+claude
+
+# 3. Dans Claude Code, invoquer le skill principal
+static-site-optimizer:optimize
+
+# 4. Claude vous demandera de choisir un workflow
+# Tapez : 1 (pour DEVELOPMENT)
+
+# 5. Claude va analyser votre site et lancer l'optimisation
+# Suivez les instructions à l'écran
+
+# 6. Une fois terminé, vérifier les résultats
+ls -la
+# Vous devriez voir des fichiers optimisés
+
+# 7. Tester le site
+npm run serve
+# Ouvrir http://localhost:8000
+
+# Félicitations ! Vos skills sont installés et fonctionnels ! 🎉
+```
+
+## 📦 Installation des outils système
+
+### Étape 6 : Installer les outils d'optimisation
+
+Une fois les skills installés, vous devez installer les outils système nécessaires.
+
+### Installation automatique des outils
 
 ```bash
 # Cloner ou copier les fichiers dans votre projet
