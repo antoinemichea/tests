@@ -259,6 +259,7 @@ touch .claude/skills/static-site-optimizer/pagespeed.md
 # 3. Créer les scripts utilitaires
 touch .claude/scripts/gdpr-optimizer.js
 touch .claude/scripts/generate-favicon.js
+touch .claude/scripts/cache-buster.js
 touch .claude/scripts/compress-assets.js
 touch .claude/scripts/compress-assets.sh
 touch .claude/scripts/image-optimizer.js
@@ -306,6 +307,7 @@ find .claude -type f
 # └── scripts/
 #     ├── gdpr-optimizer.js
 #     ├── generate-favicon.js
+#     ├── cache-buster.js
 #     ├── compress-assets.js
 #     ├── compress-assets.sh
 #     ├── image-optimizer.js
@@ -607,17 +609,18 @@ static-site-optimizer:optimize-dev
 static-site-optimizer:package-prod
 ```
 
-**Processus en 10 étapes :**
+**Processus en 11 étapes :**
 1. Vérifications pré-vol (code production-ready)
 2. Setup répertoire de production
 3. **Optimisation agressive des images** (AVIF + WebP + responsive)
 4. **Optimisation CSS** (minify, unused removal, critical CSS)
 5. **Optimisation JavaScript** (minify, tree-shake, mangle)
 6. **Minification HTML** (inline critical CSS)
-7. **Pre-Compression** 📦 (Brotli 11 + Gzip 9)
-8. Optimisations performance (resource hints, async)
-9. Audit PageSpeed (vérification 95-100 scores)
-10. Rapport de build production
+7. **Cache-Busting CSS/JS** 🏷️ (timestamp versioning)
+8. **Pre-Compression** 📦 (Brotli 11 + Gzip 9)
+9. Optimisations performance (resource hints, async)
+10. Audit PageSpeed (vérification 95-100 scores)
+11. Rapport de build production
 
 **Résultat**: Build production optimisé - **ILLISIBLE mais PERFORMANT**
 
@@ -711,6 +714,45 @@ node .claude/scripts/html-updater.js ./dist ./dist/images/optimization-report.js
 # - Rapport des modifications
 ```
 
+#### 🏷️ Cache-Busting CSS/JS (NOUVEAU!)
+
+```bash
+# Ajouter des versions timestamp aux fichiers CSS et JS
+node .claude/scripts/cache-buster.js ./dist
+
+# Avec méthode query string (défaut)
+node .claude/scripts/cache-buster.js ./dist --method=query
+
+# Avec méthode renommage de fichiers
+node .claude/scripts/cache-buster.js ./dist --method=filename
+
+# Avec timestamp personnalisé
+node .claude/scripts/cache-buster.js ./dist --timestamp=20231121000000
+
+# Dry-run (prévisualisation sans modifications)
+node .claude/scripts/cache-buster.js ./dist --dry-run
+
+# Résultat :
+# - Ajout de paramètres de version aux URLs CSS/JS
+# - Invalidation du cache navigateur
+# - Tracking de version pour debugging
+# - Rapport de cache-busting en JSON
+
+# Méthode Query String :
+# <link rel="stylesheet" href="styles.css?v=20231121154530">
+# <script src="app.js?v=20231121154530"></script>
+
+# Méthode Filename :
+# <link rel="stylesheet" href="styles.20231121154530.css">
+# <script src="app.20231121154530.js"></script>
+
+# Avantages du cache-busting :
+# ✅ Force le rechargement des assets modifiés
+# ✅ Évite les problèmes de cache obsolète
+# ✅ Version tracking pour le debugging
+# ✅ Aucune configuration serveur requise
+```
+
 #### 📦 Pre-Compression Brotli/Gzip (NOUVEAU!)
 
 ```bash
@@ -742,6 +784,9 @@ npm run serve
 
 # RGPD/GDPR Compliance (À FAIRE EN PREMIER!)
 npm run gdpr:optimize ./dist
+
+# Cache-busting CSS/JS (NOUVEAU!)
+npm run cache-bust ./dist
 
 # Validation
 npm run validate:html
@@ -785,6 +830,7 @@ npm run update:html ./dist ./dist/images/optimization-report.json
 │   └── scripts/
 │       ├── gdpr-optimizer.js         # Script conformité RGPD ⚠️
 │       ├── generate-favicon.js       # Génération favicon SVG + variantes 🎨
+│       ├── cache-buster.js           # Cache-busting CSS/JS avec timestamps 🏷️
 │       ├── compress-assets.js        # Script compression Brotli/Gzip 📦
 │       ├── compress-assets.sh        # Script compression (bash) 📦
 │       ├── image-optimizer.js        # Script d'optimisation d'images

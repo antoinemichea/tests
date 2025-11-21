@@ -34,7 +34,7 @@ Ask the user for:
 3. **Compression level**: Conservative/Balanced/Aggressive (default: Aggressive)
 4. **Keep sources**: Whether to keep uncompressed versions (default: yes)
 
-## Production Packaging Workflow - 10 Steps
+## Production Packaging Workflow - 11 Steps
 
 ### Step 1: Pre-Flight Checks
 
@@ -150,7 +150,54 @@ JPEG:      hero-1024w.jpg   135 KB (-70%)
 <!-- After:  index.html - 32 KB (-62%) -->
 ```
 
-### Step 7: Pre-Compression (Brotli + Gzip)
+### Step 7: Cache-Busting for CSS and JS
+
+**Add version timestamps to prevent browser caching issues:**
+
+Generate timestamp-based cache busting for all CSS and JavaScript files:
+- Use current date/time as version parameter
+- Format: `YYYYMMDDHHMMSS` (e.g., 20231121154530)
+- Update all HTML references automatically
+
+**Processing:**
+- Rename files to include timestamp:
+  - `styles.min.css` → `styles.min.css?v=20231121154530`
+  - Or: `styles.min.css` → `styles.min.20231121154530.css`
+- Update all `<link>` tags for CSS
+- Update all `<script>` tags for JavaScript
+- Update any CSS `@import` statements
+- Update any inline references
+
+**Example transformation:**
+```html
+<!-- Before -->
+<link rel="stylesheet" href="css/styles.min.css">
+<script src="js/app.min.js"></script>
+
+<!-- After (query string method) -->
+<link rel="stylesheet" href="css/styles.min.css?v=20231121154530">
+<script src="js/app.min.js?v=20231121154530"></script>
+
+<!-- Or (filename method - recommended) -->
+<link rel="stylesheet" href="css/styles.min.20231121154530.css">
+<script src="js/app.min.20231121154530.js"></script>
+```
+
+**Benefits:**
+- Forces browser to reload updated assets
+- Prevents stale cache issues
+- Version tracking for debugging
+- No server configuration needed
+
+**Output:**
+```
+Cache-busting applied:
+  CSS files: 8 files versioned (v=20231121154530)
+  JS files: 6 files versioned (v=20231121154530)
+  HTML updates: 12 files updated with new URLs
+```
+
+### Step 8: Pre-Compression (Brotli + Gzip)
 
 Invoke the `static-site-optimizer:compress` skill with maximum quality:
 
@@ -180,7 +227,7 @@ dist/
 └── ...
 ```
 
-### Step 8: Performance Optimizations
+### Step 9: Performance Optimizations
 
 **Add resource hints:**
 ```html
@@ -202,7 +249,7 @@ dist/
 - Create `Caddyfile` snippet
 - Include compression, caching, security headers
 
-### Step 9: PageSpeed Audit
+### Step 10: PageSpeed Audit
 
 Invoke the `static-site-optimizer:pagespeed` skill to:
 - Run Lighthouse audit (mobile + desktop)
@@ -215,7 +262,7 @@ Invoke the `static-site-optimizer:pagespeed` skill to:
 
 If scores are below target, identify and fix remaining issues.
 
-### Step 10: Production Build Report
+### Step 11: Production Build Report
 
 Generate comprehensive production report:
 

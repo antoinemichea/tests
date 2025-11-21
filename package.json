@@ -8,6 +8,7 @@
     "optimize:images": "node .claude/scripts/image-optimizer.js",
     "update:html": "node .claude/scripts/html-updater.js",
     "gdpr:optimize": "node .claude/scripts/gdpr-optimizer.js",
+    "cache-bust": "node .claude/scripts/cache-buster.js",
     "compress": "node .claude/scripts/compress-assets.js",
     "compress:bash": "bash .claude/scripts/compress-assets.sh",
     "install:tools": "bash .claude/scripts/install-tools.sh",
