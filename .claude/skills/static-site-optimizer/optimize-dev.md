@@ -23,7 +23,7 @@ Ask the user for:
 2. **Output directory**: Where to save optimized files (default: {source}_dev_optimized)
 3. **Backup**: Whether to create a backup (default: yes)
 
-## Development Workflow - 9 Steps
+## Development Workflow - 14 Steps
 
 ### Step 1: Initial Analysis and Backup
 
@@ -88,6 +88,79 @@ Invoke the `static-site-optimizer:gdpr-responsive` skill to:
   - Verify media queries exist
   - Ensure responsive images
 
+### Step 4b: Font Self-Hosting (GDPR + Performance)
+
+Apply the `modules/fonts-self-host.md` strategy to:
+- **Detect external font links** (Google Fonts, Bunny Fonts, etc.)
+  - Scan HTML for `<link>` to fonts.google.com, fonts.bunny.net
+  - Extract font families, weights, and styles
+- **Download fonts locally**
+  - Download woff2 files from Bunny Fonts (preferred) or Google Fonts
+  - Store in `assets/fonts/` directory
+  - Generate local CSS with @font-face declarations
+- **Update HTML**
+  - Replace external font links with local CSS
+  - Remove preconnect/dns-prefetch for font domains
+  - Add `font-display: swap` for optimal loading
+
+**Benefits**:
+- ✅ **GDPR compliant**: No third-party requests
+- ✅ **Performance**: -200 to -800ms latency (no external connection)
+- ✅ **Reliability**: No dependency on external CDNs
+- ✅ **Privacy**: No IP tracking
+
+**Example transformation**:
+```html
+<!-- Before -->
+<link href="https://fonts.bunny.net/css2?family=Inter:wght@400;600;700" rel="stylesheet">
+
+<!-- After -->
+<link rel="stylesheet" href="assets/fonts/inter.css">
+```
+
+**Generated files**:
+- `assets/fonts/inter-400.woff2`
+- `assets/fonts/inter-600.woff2`
+- `assets/fonts/inter-700.woff2`
+- `assets/fonts/inter.css` (with @font-face declarations)
+
+### Step 4c: Font Awesome Subset Optimization
+
+Apply the `modules/fontawesome-subset.md` strategy to:
+- **Detect Font Awesome usage**
+  - Scan HTML for `fa-*` icon classes
+  - Extract all unique icons used
+  - Classify by type (solid, brands, regular, light)
+- **Generate minimal CSS subset**
+  - Create `assets/icons.css` with only used icons
+  - Include base icon styles (.fas, .fab, etc.)
+  - Add Unicode mappings for detected icons only
+  - Preserve @font-face for required webfonts
+- **Update HTML**
+  - Replace `all.min.css` with `icons.css`
+  - Keep webfonts directory intact
+  - No changes to icon classes (zero breaking changes)
+
+**Benefits**:
+- ✅ **Bandwidth**: -98KB CSS eliminated (-98%)
+- ✅ **Performance**: Faster CSS parsing
+- ✅ **Maintainability**: Visible list of used icons
+- ✅ **No breaking changes**: HTML unchanged, webfonts preserved
+
+**Example transformation**:
+```html
+<!-- Before -->
+<link rel="stylesheet" href="assets/fontawesome/all.min.css">  <!-- 100KB -->
+
+<!-- After -->
+<link rel="stylesheet" href="assets/icons.css">  <!-- 1.6KB -->
+```
+
+**Typical results**:
+- Before: 100KB (2000+ icons)
+- After: 1.6KB (15-20 icons)
+- Savings: -98.4KB (-98%)
+
 ### Step 5: Image Optimization (Basic)
 
 **ONLY basic optimization, NO format conversion:**
@@ -119,6 +192,177 @@ Apply accessibility fixes:
 - Add proper form labels
 - Add keyboard navigation support
 - Add focus indicators
+
+### Step 6b: GPU-Composited Animations
+
+Apply the `modules/animations-gpu.md` strategy to:
+- **Scan CSS for @keyframes animations**
+  - Detect all animation definitions
+  - Identify non-composited properties (height, width, top, left, border-radius)
+- **Convert to GPU-composited properties**
+  - `height: 0 → 100%` becomes `transform: scaleY(0) → scaleY(1)`
+  - `width: 0 → 100%` becomes `transform: scaleX(0) → scaleX(1)`
+  - `top/left` becomes `transform: translate()`
+  - `border-radius` animated → **remove** (decorative, non-composable)
+- **Add will-change for recurring animations**
+  - Apply `will-change: transform, opacity` where appropriate
+  - Limit usage to avoid memory overhead
+- **Report warnings for complex animations**
+  - Flag animations requiring manual review
+  - Suggest compositable alternatives
+
+**Benefits**:
+- ✅ **Performance**: 60 FPS constant (vs 30-45 before)
+- ✅ **CLS**: Cumulative Layout Shift reduced by 50-80%
+- ✅ **Smoothness**: No animation jank
+- ✅ **Battery**: Less CPU, more GPU (efficient)
+
+**Example transformation**:
+```css
+/* Before - causes reflows */
+@keyframes slideDown {
+  from { height: 0; }
+  to { height: 100%; }
+}
+
+/* After - GPU-composited */
+@keyframes slideDown {
+  from {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  to {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+}
+```
+
+**Impact**:
+- Forced reflows: 300/sec → 0
+- Animation FPS: 30-45 → 60 (constant)
+- CLS: 0.25 → 0.05 (-80%)
+
+### Step 6c: JavaScript Forced Reflows Optimization
+
+Apply the `modules/js-reflows.md` strategy to:
+- **Detect forced reflow patterns**
+  - Scan JavaScript for layout property reads (offsetTop, offsetHeight, etc.)
+  - Identify reads in loops, forEach, event listeners
+  - Detect read-write-read patterns (layout thrashing)
+- **Implement dimension caching**
+  - Cache section dimensions in array
+  - Update cache only on resize (debounced)
+  - Use cache in scroll handlers (0 reflows)
+- **Add throttle/debounce utilities**
+  - Throttle scroll events (100ms interval)
+  - Debounce resize events (250ms delay)
+  - Add passive event listeners where applicable
+- **Apply requestAnimationFrame**
+  - Async layout reads for non-blocking performance
+  - Batch reads, then batch writes (FastDOM pattern)
+
+**Benefits**:
+- ✅ **TBT**: Total Blocking Time reduced by 30-50%
+- ✅ **Scroll performance**: 60 FPS during scroll
+- ✅ **Responsiveness**: Better user interaction
+- ✅ **Battery**: Less CPU usage
+
+**Example transformation**:
+```javascript
+// Before - forced reflows (420/sec during scroll)
+window.addEventListener('scroll', () => {
+  sections.forEach(section => {
+    const top = section.offsetTop;      // Reflow
+    const height = section.offsetHeight; // Reflow
+    // ...
+  });
+});
+
+// After - cached dimensions (0 reflows)
+let sectionCache = [];
+
+function updateSectionCache() {
+  sectionCache = Array.from(sections).map(section => ({
+    id: section.getAttribute('id'),
+    top: section.offsetTop,
+    height: section.offsetHeight
+  }));
+}
+
+updateSectionCache();
+window.addEventListener('resize', debounce(updateSectionCache, 250));
+
+const handleScroll = throttle(() => {
+  const scrollY = window.pageYOffset;
+  sectionCache.forEach(section => {
+    // Use cached values (0 reflows)
+  });
+}, 100);
+
+window.addEventListener('scroll', handleScroll, { passive: true });
+```
+
+**Impact**:
+- Reflows during scroll: 420/sec → 0
+- Total Blocking Time: 180ms → 95ms (-47%)
+- Scroll FPS: 35-45 → 60
+
+### Step 6d: Resource Hints (Preconnect/DNS-Prefetch)
+
+Apply the `modules/preconnect-hints.md` strategy to:
+- **Detect external domains**
+  - Scan HTML for iframes (YouTube, maps, widgets)
+  - Detect external images, scripts, stylesheets
+  - Extract all unique external origins
+- **Classify by resource type**
+  - Iframes → `preconnect` (high priority)
+  - External fonts → `preconnect` (if not self-hosted)
+  - CDN resources → `preconnect` or `dns-prefetch`
+  - Analytics → `dns-prefetch` (low priority)
+- **Generate resource hints**
+  - Add `<link rel="preconnect">` for critical resources
+  - Add `crossorigin` attribute for CORS resources
+  - Add `<link rel="dns-prefetch">` for secondary resources
+  - Limit preconnect to 4-6 domains (avoid overhead)
+- **Insert in `<head>` early**
+  - Place before stylesheets
+  - Organize by hint type
+  - Deduplicate domains
+
+**Benefits**:
+- ✅ **Latency**: -200 to -500ms connection time
+- ✅ **LCP**: Improved if external resources above-fold
+- ✅ **User experience**: Faster third-party content
+- ✅ **PageSpeed**: Better scores
+
+**Example transformation**:
+```html
+<!-- Before - no hints -->
+<head>
+  <title>Page Title</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <iframe src="https://www.youtube.com/embed/..."></iframe>
+  <iframe src="https://widget.example.com/..."></iframe>
+</body>
+
+<!-- After - hints added -->
+<head>
+  <!-- Resource hints (early in head) -->
+  <link rel="preconnect" href="https://www.youtube.com" crossorigin>
+  <link rel="preconnect" href="https://widget.example.com" crossorigin>
+
+  <title>Page Title</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+```
+
+**Impact**:
+- Connection latency: 300ms → 0ms (per external domain)
+- LCP: -200 to -500ms (if iframes/images above-fold)
+- PageSpeed: +2 to +5 points
 
 ### Step 7: SEO Structure
 
@@ -261,7 +505,7 @@ Invoke the `static-site-optimizer:pagespeed` skill to establish baseline metrics
 - Focus on accessibility and SEO scores
 - Performance will jump to 95-100 in PROD workflow
 
-### Step 9: Development Report
+### Step 14: Development Report
 
 Generate a comprehensive report:
 
@@ -276,9 +520,68 @@ DEVELOPMENT OPTIMIZATION REPORT
   JS:   6 files validated, 2 errors fixed
 
 ✅ GDPR COMPLIANCE:
-  ⚠ Google Fonts → Bunny Fonts: 3 replacements
+  ⚠ Google Fonts → Bunny Fonts → Self-Hosted: Complete
   ✓ External resources self-hosted: 5 libraries
   ⚠ Tracking scripts flagged: 2 (need consent)
+
+✅ FONTS AUTO-HÉBERGÉES:
+  ✓ Inter (400, 600, 700): 71KB téléchargés
+    - Suppression: fonts.bunny.net (-790ms requête bloquante)
+    - Ajout: font-display: swap
+    - Fichiers créés:
+      • assets/fonts/inter-400.woff2 (23KB)
+      • assets/fonts/inter-600.woff2 (24KB)
+      • assets/fonts/inter-700.woff2 (24KB)
+      • assets/fonts/inter.css (1.5KB)
+  Impact GDPR: ✓ Compliant (aucune requête tierce)
+  Impact Performance: -790ms LCP, +8 PageSpeed
+
+✅ FONT AWESOME OPTIMISÉ:
+  ✓ Subset créé: 17 icônes détectées
+    - Avant: 100KB (all.min.css)
+    - Après: 1.6KB (icons.css)
+    - Gain: -98.4KB (-98.4%)
+    - Icônes incluses: fa-phone, fa-mobile, fa-tools, fa-facebook-f...
+    - Webfonts conservés: fa-solid-900.woff2 (78KB), fa-brands-400.woff2 (72KB)
+  Impact Performance: -45ms CSS parsing, +5 PageSpeed
+
+✅ ANIMATIONS GPU-COMPOSÉES:
+  ✓ 5 animations converties
+    - slideDown: height → scaleY ✓
+    - slideRight: left → translateX ✓
+    - morph: border-radius supprimé (purement décoratif) ✓
+    - morphBg: border-radius supprimé ✓
+    - fadeIn: déjà optimisé (opacity seule) ✓
+  Gain Performance:
+    - Forced reflows: 0 (vs 300/sec avant sur animations)
+    - CLS: 0.25 → 0.05 (-80%)
+    - Animation FPS: 60 constant (vs 30-45 avant)
+
+✅ JS OPTIMISÉ (FORCED REFLOWS ÉLIMINÉS):
+  ✓ Cache dimensions: 7 sections
+    - offsetTop/offsetHeight cachés
+    - Mise à jour uniquement au resize (debounced 250ms)
+  ✓ Throttle/Debounce appliqués:
+    - Scroll events: throttle 100ms (6 handlers)
+    - Resize events: debounce 250ms (3 handlers)
+  ✓ RequestAnimationFrame ajouté: 2 handlers
+  ✓ Utilitaires ajoutés: debounce(), throttle()
+  Gain Performance:
+    - Total Blocking Time: 180ms → 95ms (-85ms, -47%)
+    - Scroll FPS: 35-45 → 60 FPS constant
+    - Reflows: 420/sec → 0 pendant scroll
+
+✅ RESOURCE HINTS AJOUTÉS:
+  ✓ 3 domaines externes optimisés
+    - Preconnect: 2 domaines (iframes)
+    - DNS-prefetch: 1 domaine (images)
+  Domaines optimisés:
+    • www.skaping.com (preconnect + crossorigin) - iframe booking
+    • serrechevalier.roundshot.com (preconnect + crossorigin) - iframe webcam
+    • meteo-serre-chevalier.fr (dns-prefetch) - icônes météo
+  Impact Performance:
+    - Latence connexion: -600ms (2 iframes × 300ms)
+    - LCP: -450ms (iframe above-fold)
 
 ✅ ACCESSIBILITY:
   ✓ ARIA labels added: 15
@@ -300,28 +603,37 @@ DEVELOPMENT OPTIMIZATION REPORT
   ✓ Viewport tags: 12 pages
   ✓ Media queries: Present
 
-📊 PERFORMANCE AUDIT (Baseline):
+📊 PERFORMANCE AUDIT (After DEV Optimizations):
   Mobile:
-    Performance:     78/100  (baseline)
+    Performance:     88/100  ✓ (improved from baseline ~70)
     Accessibility:   95/100  ✓
     Best Practices:  90/100  ✓
     SEO:            100/100  ✓
 
   Desktop:
-    Performance:     85/100  (baseline)
+    Performance:     92/100  ✓ (improved from baseline ~80)
     Accessibility:   95/100  ✓
     Best Practices:  90/100  ✓
     SEO:            100/100  ✓
 
-  Core Web Vitals (baseline):
-    LCP: 2.8s (will improve in PROD)
-    FID: 35ms ✓
-    CLS: 0.05 ✓
+  Core Web Vitals (optimized):
+    LCP: 1.5s ✓ (improved from 2.8s, -1.3s thanks to font self-hosting + preconnect)
+    FID: 25ms ✓ (improved from 35ms, -10ms thanks to JS optimizations)
+    CLS: 0.05 ✓ (maintained, animations GPU-composited prevent layout shifts)
+    TBT: 95ms ✓ (improved from 180ms, -85ms thanks to JS cache)
+
+  🚀 DEV Optimization Impact:
+    - Fonts self-hosted: -790ms LCP
+    - Font Awesome subset: -98KB CSS, -45ms parse time
+    - Animations GPU: 0 forced reflows, CLS stable
+    - JS optimized: -85ms TBT, 60 FPS scroll
+    - Resource hints: -600ms external connections
+    - Total improvement: +18 PageSpeed points vs unoptimized baseline
 
   ⚠ Performance Notes:
-    - Lower performance score expected (no minification)
-    - Will improve to 95-100 in PRODUCTION workflow
-    - Code structure is sound
+    - Already excellent scores WITHOUT minification
+    - Will improve to 95-100 in PRODUCTION workflow (minification + compression)
+    - Code structure is optimal for performance
 
 ===========================================
 CODE QUALITY: Excellent ✓
@@ -338,14 +650,16 @@ PERFORMANCE BASELINE: 78/100 (expected, will improve in PROD)
 
 NEXT STEPS FOR DEVELOPMENT:
 1. Review and test the optimized code
-2. Implement cookie consent banner for tracking scripts
-3. Update privacy policy to mention Bunny Fonts usage
-4. Address any PageSpeed recommendations if needed
-5. Continue development with clean, validated code
-6. Monitor baseline performance during development
-7. When ready for production, run the PRODUCTION workflow
-   → Performance will improve from ~78 to 95-100
-   → File sizes will reduce by 70-90%
+2. Verify all icons display correctly (Font Awesome subset)
+3. Test animations on various devices (GPU-composited)
+4. Monitor scroll performance (should be 60 FPS)
+5. Implement cookie consent banner for tracking scripts
+6. Update privacy policy (self-hosted fonts, no third-party tracking)
+7. Continue development with optimized, maintainable code
+8. When ready for production, run the PRODUCTION workflow
+   → Performance will improve from ~88 to 98-100 (minification + compression)
+   → File sizes will reduce by additional 60-80%
+   → Already excellent base thanks to DEV optimizations
 
 ⚠ IMPORTANT: This is the DEV version
    - Code is readable and maintainable
@@ -387,30 +701,51 @@ NEXT STEPS FOR DEVELOPMENT:
 
 Development optimization is complete when:
 - ✅ All code validates without errors
-- ✅ GDPR compliance achieved (Google Fonts → Bunny Fonts)
+- ✅ GDPR compliance achieved (fonts self-hosted, no third-party tracking)
 - ✅ Accessibility score 90+
 - ✅ SEO structure in place
+- ✅ Performance optimizations applied:
+  - ✅ Fonts auto-hébergées (no external requests)
+  - ✅ Font Awesome subset generated (-98KB CSS)
+  - ✅ Animations GPU-composited (0 forced reflows)
+  - ✅ JS forced reflows eliminated (cache + throttle)
+  - ✅ Resource hints added (preconnect/dns-prefetch)
 - ✅ Code remains readable and maintainable
 - ✅ Images are basically optimized (but still editable)
+- ✅ Performance score 85-92 (excellent for DEV, without minification)
 - ✅ Ready for continued development
 
 ## Output Structure
 
 ```
 output_dev_optimized/
-├── index.html           (validated, readable)
+├── index.html           (validated, readable, optimized)
 ├── css/
-│   └── styles.css      (validated, readable, NOT minified)
+│   └── styles.css      (validated, readable, GPU-optimized animations, NOT minified)
 ├── js/
-│   └── app.js          (validated, readable, NOT minified)
+│   └── app.js          (validated, readable, cached dimensions, throttle/debounce, NOT minified)
 ├── images/
 │   └── *.jpg           (lossless optimized, original format)
 ├── assets/
+│   ├── fonts/          (NEW: self-hosted fonts)
+│   │   ├── inter-400.woff2
+│   │   ├── inter-600.woff2
+│   │   ├── inter-700.woff2
+│   │   └── inter.css
+│   ├── icons.css       (NEW: Font Awesome subset, 1.6KB vs 100KB)
+│   ├── webfonts/       (Font Awesome webfonts, unchanged)
+│   │   ├── fa-solid-900.woff2
+│   │   └── fa-brands-400.woff2
 │   ├── js/             (self-hosted libraries)
 │   └── css/            (self-hosted libraries)
 ├── reports/
 │   ├── validation-report.json
 │   ├── gdpr-report.json
+│   ├── fonts-report.json         (NEW: fonts optimization report)
+│   ├── icons-report.json         (NEW: Font Awesome subset report)
+│   ├── animations-report.json    (NEW: GPU animations report)
+│   ├── js-reflows-report.json    (NEW: JS optimization report)
+│   ├── resource-hints-report.json (NEW: preconnect/dns-prefetch report)
 │   └── dev-report.txt
 ├── sitemap.xml
 └── robots.txt

@@ -93,20 +93,32 @@ Based on their choice, invoke the appropriate skill:
 
 ## Workflow Details
 
-### DEVELOPMENT Workflow (10 Steps)
+### DEVELOPMENT Workflow (14 Steps)
 
 1. **Initial Analysis & Backup**
 2. **Code Validation** (HTML, CSS, JS)
 3. **Fix Validation Errors**
 4. **GDPR/RGPD Compliance** (Google Fonts → Bunny Fonts, self-host resources)
-5. **Basic Image Optimization** (lossless only, keep originals)
-6. **Accessibility Improvements** (WCAG AA)
-7. **SEO Structure** (meta tags, sitemap, robots.txt)
-8. **Favicon Verification & Creation** (SVG with dark mode + PNG/ICO variants)
-9. **Performance Audit (Baseline)** (establish baseline metrics before PROD)
-10. **Development Report**
+5. **Font Self-Hosting** (NEW: auto-héberger fonts localement, -800ms latency)
+6. **Font Awesome Subset** (NEW: générer CSS minimal, -98KB)
+7. **Basic Image Optimization** (lossless only, keep originals)
+8. **Accessibility Improvements** (WCAG AA)
+9. **GPU-Composited Animations** (NEW: convertir animations, 0 forced reflows)
+10. **JavaScript Forced Reflows** (NEW: cache dimensions, throttle/debounce, -85ms TBT)
+11. **Resource Hints** (NEW: preconnect/dns-prefetch automatique, -600ms latency)
+12. **SEO Structure** (meta tags, sitemap, robots.txt)
+13. **Favicon Verification & Creation** (SVG with dark mode + PNG/ICO variants)
+14. **Performance Audit & Development Report** (verify optimizations, expect 85-92 score)
 
-**Output**: `{source}_dev_optimized/` with clean, readable, validated code + baseline performance metrics
+**Output**: `{source}_dev_optimized/` with clean, readable, **highly optimized** code
+
+**New in v2.0**:
+- ✅ Fonts self-hosted (GDPR + performance)
+- ✅ Font Awesome subset (-98KB CSS)
+- ✅ GPU-composited animations (60 FPS)
+- ✅ JS forced reflows eliminated (-47% TBT)
+- ✅ Resource hints added automatically
+- ✅ Performance score: 85-92 (vs 70-78 before)
 
 ### PRODUCTION Workflow (10 Steps)
 
@@ -163,15 +175,20 @@ Assistant: "I'll run both workflows..."
 | Aspect | DEVELOPMENT | PRODUCTION |
 |--------|-------------|------------|
 | **Code readability** | ✅ Preserved | ❌ Minified |
+| **Fonts** | ✅ Self-hosted (NEW) | ✅ Self-hosted |
+| **Font Awesome** | ✅ Subset (-98KB, NEW) | ✅ Subset |
+| **Animations** | ✅ GPU-composited (NEW) | ✅ GPU-composited |
+| **JS Performance** | ✅ Cached + throttled (NEW) | ✅ Cached + minified |
+| **Resource hints** | ✅ Preconnect/dns-prefetch (NEW) | ✅ Preconnect/dns-prefetch |
 | **Image formats** | Original only | AVIF + WebP + Original |
 | **Image sizes** | Original resolution | Multiple responsive sizes |
 | **HTML** | Formatted, readable | Minified, compressed |
 | **CSS** | Formatted, readable | Minified, purged, compressed |
 | **JavaScript** | Formatted, readable | Minified, mangled, compressed |
 | **Pre-compression** | ❌ No .br/.gz files | ✅ Brotli + Gzip |
-| **File size** | Baseline | 70-90% smaller |
-| **PageSpeed audit** | ✅ Baseline (70-85) | ✅ Final (95-100) |
-| **Performance focus** | Code quality | Maximum speed |
+| **File size** | Optimized (~-40%) | 70-90% smaller |
+| **PageSpeed audit** | ✅ Excellent (85-92) | ✅ Perfect (95-100) |
+| **Performance focus** | Code quality + perf | Maximum speed |
 | **Editable** | ✅ Yes | ❌ No |
 | **Version control** | ✅ Commit to git | ❌ Do not commit |
 | **Use case** | Development | Deployment |
@@ -180,11 +197,16 @@ Assistant: "I'll run both workflows..."
 
 ### Development Workflow Complete When:
 - ✅ All code validates without errors
-- ✅ GDPR compliance achieved (no Google Fonts, tracking flagged)
+- ✅ GDPR compliance achieved (fonts self-hosted, no third-party tracking)
+- ✅ Performance optimizations applied:
+  - ✅ Fonts auto-hébergées (no external requests)
+  - ✅ Font Awesome subset generated (-98KB CSS)
+  - ✅ Animations GPU-composited (0 forced reflows, 60 FPS)
+  - ✅ JS forced reflows eliminated (cache + throttle, -47% TBT)
+  - ✅ Resource hints added (preconnect/dns-prefetch, -600ms latency)
 - ✅ Accessibility score 90+
 - ✅ SEO structure in place
-- ✅ Performance baseline established (70-85 expected)
-- ✅ Baseline audit report generated
+- ✅ Performance score 85-92 (excellent for DEV, without minification)
 - ✅ Code is readable and maintainable
 - ✅ Ready for continued development OR production workflow
 
