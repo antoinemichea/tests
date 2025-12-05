@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}" dir="ltr">
+<head>
+    <!-- Encodage et Viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Essentiels -->
+    <title>{{PAGE_TITLE}} | {{SITE_NAME}}</title>
+    <meta name="description" content="{{META_DESCRIPTION}}">
+    <meta name="keywords" content="{{META_KEYWORDS}}">
+    <meta name="author" content="{{AUTHOR}}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{CANONICAL_URL}}">
+
+    <!-- Open Graph (Réseaux Sociaux) -->
+    <meta property="og:title" content="{{PAGE_TITLE}} | {{SITE_NAME}}">
+    <meta property="og:description" content="{{META_DESCRIPTION}}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{CANONICAL_URL}}">
+    <meta property="og:image" content="{{OG_IMAGE}}">
+    <meta property="og:locale" content="{{LOCALE}}">
+    <meta property="og:site_name" content="{{SITE_NAME}}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{PAGE_TITLE}}">
+    <meta name="twitter:description" content="{{META_DESCRIPTION}}">
+    <meta name="twitter:image" content="{{OG_IMAGE}}">
+
+    <!-- Favicon Multi-format -->
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="assets/icons/favicon-16.png" sizes="16x16" type="image/png">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <meta name="theme-color" content="{{THEME_COLOR}}">
+
+    <!-- Preload Ressources Critiques -->
+    <link rel="preload" href="styles/main.css" as="style">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/utilities.css">
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "{{SCHEMA_TYPE}}",
+        "name": "{{SITE_NAME}}",
+        "description": "{{META_DESCRIPTION}}",
+        "url": "{{SITE_URL}}",
+        {{#if LOCATION}}
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "{{LOCATION}}"
+        },
+        {{/if}}
+        "image": "{{OG_IMAGE}}"
+    }
+    </script>
+</head>
+<body class="{{STYLE_CLASS}}">
+    <!-- Skip Link Accessibilité -->
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+    {{#if COOKIE_BANNER}}
+    <!-- Bannière Cookies RGPD -->
+    <div id="cookie-banner" class="cookie-banner" role="alert" aria-live="polite" hidden>
+        <p>Ce site utilise uniquement des cookies essentiels au fonctionnement. Aucun tracking.</p>
+        <button type="button" onclick="acceptCookies()" class="btn btn--small">Compris</button>
+    </div>
+    {{/if}}
+
+    <!-- Header -->
+    <header class="site-header" role="banner">
+        <div class="container">
+            <a href="index.html" class="site-logo" aria-label="{{SITE_NAME}} - Accueil">
+                {{SITE_NAME}}
+            </a>
+
+            {{#if NAV_RESPONSIVE}}
+            <button class="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Menu">
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+            </button>
+            {{/if}}
+
+            <nav id="main-nav" class="main-nav" role="navigation" aria-label="Navigation principale">
+                <ul class="nav-list">
+                    {{#each PAGES}}
+                    <li><a href="{{this.url}}" {{#if this.current}}aria-current="page"{{/if}}>{{this.name}}</a></li>
+                    {{/each}}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenu Principal -->
+    <main id="main-content" class="main-content" role="main">
+        {{CONTENT}}
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <p class="footer-brand">{{SITE_NAME}}</p>
+                    <p class="footer-tagline">{{TAGLINE}}</p>
+                </div>
+
+                {{#if SOCIAL_LINKS}}
+                <div class="footer-section">
+                    <h2 class="footer-heading">Suivez-nous</h2>
+                    <ul class="social-links" aria-label="Réseaux sociaux">
+                        <!-- Liens réseaux sociaux à personnaliser -->
+                        <li><a href="#" aria-label="LinkedIn" rel="noopener noreferrer">LinkedIn</a></li>
+                        <li><a href="#" aria-label="Twitter" rel="noopener noreferrer">Twitter</a></li>
+                    </ul>
+                </div>
+                {{/if}}
+
+                <div class="footer-section">
+                    <h2 class="footer-heading">Navigation</h2>
+                    <ul class="footer-nav">
+                        {{#each PAGES}}
+                        <li><a href="{{this.url}}">{{this.name}}</a></li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; {{YEAR}} {{SITE_NAME}}. Tous droits réservés.</p>
+                <p class="footer-credits">
+                    <a href="humans.txt">Crédits</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    {{#if BACK_TO_TOP}}
+    <!-- Bouton Retour en Haut -->
+    <button id="back-to-top" class="back-to-top" aria-label="Retour en haut de page" hidden>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+    {{/if}}
+
+    <!-- JavaScript (chargé en différé) -->
+    <script src="scripts/main.js" defer></script>
+</body>
+</html>

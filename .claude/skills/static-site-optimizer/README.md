@@ -1,6 +1,89 @@
-# Static Site Optimizer - v2.0
+# Static Site Optimizer - v2.1
 
-Skill complet d'optimisation de sites web statiques avec deux workflows distincts : **DEVELOPMENT** et **PRODUCTION**.
+Skill complet de **création et d'optimisation** de sites web statiques avec:
+- **Bootstrap Site**: Créer un site from scratch avec questionnaire interactif
+- **DEVELOPMENT Workflow**: Optimiser le code tout en le gardant lisible
+- **PRODUCTION Workflow**: Packager pour déploiement avec performance maximale
+
+## 🆕 Nouveau: Bootstrap Site (`bootstrap-site.md`)
+
+**Créez un site web statique frugal en quelques minutes !**
+
+Le skill `bootstrap-site` guide l'utilisateur à travers un questionnaire interactif pour générer un site complet, optimisé dès le départ pour:
+
+### Caractéristiques
+
+- **8 Styles Visuels**: Moderne, Rétro, Minimaliste, Brutaliste, Organique, Artistique, Corporate, Terminal
+- **5 Palettes Prédéfinies** + Personnalisée
+- **Structure SEO Complète**: Meta tags, Open Graph, Schema.org, sitemap.xml
+- **Hébergement Frugal**: Zéro dépendance externe, polices système, JS minimal
+- **RGPD Compliant**: Pas de tracking, pas de fonts externes
+- **Accessibilité WCAG AA**: Skip links, ARIA, focus visible
+
+### Questionnaire Interactif
+
+1. **Nom du projet** - Titre et slug
+2. **Type de site** - Portfolio, Vitrine, Blog, Landing, Documentation, Galerie
+3. **Style visuel** - 8 styles prédéfinis
+4. **Palette de couleurs** - 6 options
+5. **Pages** - Configuration prédéfinie ou personnalisée
+6. **Fonctionnalités** - Nav responsive, mode sombre, formulaire, réseaux sociaux...
+7. **Contenu** - Placeholder Lorem Ipsum ou structure vide
+8. **Informations SEO** - Description, mots-clés, langue, localisation
+
+### Structure Générée
+
+```
+mon-site/
+├── index.html                    # Page d'accueil SEO-optimisée
+├── [autres-pages].html           # Pages additionnelles
+├── styles/
+│   ├── main.css                  # Styles avec variables CSS
+│   ├── components.css            # Composants réutilisables
+│   └── utilities.css             # Classes utilitaires
+├── scripts/
+│   └── main.js                   # JavaScript minimal (< 3KB)
+├── assets/
+│   ├── images/
+│   ├── icons/
+│   │   └── favicon.svg           # Favicon SVG avec dark mode
+│   └── fonts/
+├── robots.txt                    # Instructions moteurs
+├── sitemap.xml                   # Plan du site
+├── humans.txt                    # Crédits
+├── .htaccess                     # Config Apache
+└── README.md                     # Documentation
+```
+
+### Synergie avec les Workflows
+
+Le site généré est **immédiatement compatible** avec les workflows existants:
+
+```bash
+# 1. Créer le site
+static-site-optimizer:bootstrap-site
+
+# 2. Personnaliser le contenu...
+
+# 3. Valider le code
+static-site-optimizer:validate
+
+# 4. Optimiser (DEV)
+static-site-optimizer:optimize-dev
+
+# 5. Packager (PROD)
+static-site-optimizer:package-prod
+```
+
+### Utilisation
+
+```
+static-site-optimizer:bootstrap-site
+```
+
+Puis répondez aux 8 questions pour générer votre site personnalisé.
+
+---
 
 ## 🚀 Nouvelles Fonctionnalités v2.0
 
@@ -193,6 +276,7 @@ window.addEventListener('scroll', throttle(() => {
 
 ```
 .claude/skills/static-site-optimizer/
+├── bootstrap-site.md        # 🆕 Créateur de site interactif
 ├── optimize.md              # Main orchestrator
 ├── optimize-dev.md          # DEV workflow (14 steps)
 ├── package-prod.md          # PROD workflow (10 steps)
@@ -202,12 +286,20 @@ window.addEventListener('scroll', throttle(() => {
 ├── minify.md                # Minification
 ├── compress.md              # Pre-compression
 ├── pagespeed.md             # Lighthouse audit
-└── modules/                 # NEW: Advanced optimizations
-    ├── fonts-self-host.md          # Font auto-hébergement
-    ├── fontawesome-subset.md       # Font Awesome subset
-    ├── animations-gpu.md           # GPU-composited animations
-    ├── js-reflows.md               # Forced reflows elimination
-    └── preconnect-hints.md         # Resource hints
+├── modules/                 # Advanced optimizations
+│   ├── fonts-self-host.md          # Font auto-hébergement
+│   ├── fontawesome-subset.md       # Font Awesome subset
+│   ├── animations-gpu.md           # GPU-composited animations
+│   ├── js-reflows.md               # Forced reflows elimination
+│   └── preconnect-hints.md         # Resource hints
+└── templates/               # 🆕 Templates Bootstrap Site
+    ├── base.html                   # Template HTML de base
+    ├── styles/
+    │   ├── main.css                # Template CSS principal
+    │   ├── components.css          # Composants UI
+    │   └── utilities.css           # Classes utilitaires
+    └── scripts/
+        └── main.js                 # JavaScript minimal
 ```
 
 ## 🎯 Cas d'Usage
@@ -340,7 +432,21 @@ Les modules sont invoqués automatiquement par le workflow DEV, mais peuvent êt
 
 ---
 
-**Version**: 2.0
-**Date**: 2025-01
+**Version**: 2.1
+**Date**: 2025-12
 **Auteur**: static-site-optimizer skill
 **License**: Claude Code Skills
+
+## Changelog
+
+### v2.1 (2025-12)
+- 🆕 **Nouveau skill**: `bootstrap-site` - Créateur de site interactif
+- 🆕 8 styles visuels prédéfinis
+- 🆕 Templates HTML/CSS/JS prêts à l'emploi
+- 🆕 Script générateur de structure (`site-generator.js`)
+- 📚 Documentation mise à jour
+
+### v2.0 (2025-01)
+- 5 modules d'optimisation avancée
+- Workflow dual DEV/PROD
+- Amélioration des performances (+28 points PageSpeed)
