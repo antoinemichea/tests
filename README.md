@@ -157,7 +157,6 @@ Ce système propose **DEUX workflows spécialisés** pour les différentes phase
   - JSON, SVG, XML
   - Source maps, manifests
 - **Compression additive** (fichiers originaux préservés)
-- **Configuration serveur** automatique
 - **Zéro overhead runtime** (pré-compressé au build)
 
 ### 📊 Audit de performance
@@ -1115,48 +1114,15 @@ EOF
 # Option E : Serveur personnalisé (SSH + rsync)
 rsync -avz --delete dist/ user@votre-serveur.com:/var/www/html/
 
-# 19. Configurer le serveur pour utiliser les fichiers pre-compressés
-
-# Pour Nginx, ajouter dans la config :
-cat > nginx-brotli.conf << 'EOF'
-# Brotli
-brotli on;
-brotli_static on;
-brotli_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;
-
-# Gzip (fallback)
-gzip on;
-gzip_static on;
-gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;
-EOF
-
-# Pour Apache, ajouter dans .htaccess :
-cat > dist/.htaccess << 'EOF'
-# Serve pre-compressed Brotli files
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteCond %{HTTP:Accept-Encoding} br
-  RewriteCond %{REQUEST_FILENAME}.br -f
-  RewriteRule ^(.*)$ $1.br [L]
-</IfModule>
-
-# Serve pre-compressed Gzip files
-<IfModule mod_rewrite.c>
-  RewriteCond %{HTTP:Accept-Encoding} gzip
-  RewriteCond %{REQUEST_FILENAME}.gz -f
-  RewriteRule ^(.*)$ $1.gz [L]
-</IfModule>
-EOF
-
-# 20. Vérifier le déploiement
+# 19. Vérifier le déploiement
 curl -I https://votre-site.com
 # Vérifier les headers : Content-Encoding: br ou gzip
 
-# 21. Tester le site en production
+# 20. Tester le site en production
 # Ouvrir https://votre-site.com
 # Vérifier que tout fonctionne
 
-# 22. Lancer un audit PageSpeed final sur le site en production
+# 21. Lancer un audit PageSpeed final sur le site en production
 # Aller sur https://pagespeed.web.dev/
 # Entrer l'URL de votre site
 # Vérifier les scores 95-100 ✅
@@ -1165,7 +1131,7 @@ curl -I https://votre-site.com
 # PHASE 5 : MAINTENANCE ET ITÉRATION
 # ============================================
 
-# 23. Pour chaque mise à jour du site :
+# 22. Pour chaque mise à jour du site :
 
 # A. Modifications de développement (contenu, features)
 git checkout main

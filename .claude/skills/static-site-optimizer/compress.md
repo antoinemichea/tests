@@ -415,87 +415,6 @@ if (require.main === module) {
 module.exports = { compressFile, compressDirectory };
 ```
 
-## Server Configuration
-
-### Nginx
-
-```nginx
-# Enable gzip
-gzip on;
-gzip_vary on;
-gzip_proxied any;
-gzip_types text/plain text/css text/xml text/javascript
-           application/json application/javascript application/xml+rss
-           application/x-javascript image/svg+xml;
-
-# Serve pre-compressed files
-gzip_static on;
-brotli_static on;
-
-# Cache compressed files
-location ~* \.(html|css|js|json|svg|xml)$ {
-    add_header Vary Accept-Encoding;
-    expires 1y;
-    add_header Cache-Control "public, immutable";
-}
-```
-
-### Apache (.htaccess)
-
-```apache
-# Serve pre-compressed Brotli files
-<IfModule mod_headers.c>
-    RewriteEngine On
-
-    # Brotli
-    RewriteCond %{HTTP:Accept-Encoding} br
-    RewriteCond %{REQUEST_FILENAME}.br -f
-    RewriteRule ^(.*)$ $1.br [L]
-
-    # Gzip
-    RewriteCond %{HTTP:Accept-Encoding} gzip
-    RewriteCond %{REQUEST_FILENAME}.gz -f
-    RewriteRule ^(.*)$ $1.gz [L]
-
-    # Set correct Content-Type
-    <FilesMatch "\.js\.br$">
-        Header set Content-Type "application/javascript"
-        Header set Content-Encoding "br"
-    </FilesMatch>
-
-    <FilesMatch "\.css\.br$">
-        Header set Content-Type "text/css"
-        Header set Content-Encoding "br"
-    </FilesMatch>
-
-    <FilesMatch "\.js\.gz$">
-        Header set Content-Type "application/javascript"
-        Header set Content-Encoding "gzip"
-    </FilesMatch>
-
-    <FilesMatch "\.css\.gz$">
-        Header set Content-Type "text/css"
-        Header set Content-Encoding "gzip"
-    </FilesMatch>
-</IfModule>
-```
-
-### Caddy (Caddyfile)
-
-```
-example.com {
-    root * /var/www/html
-
-    # Automatic Brotli and Gzip
-    encode brotli gzip
-
-    # Serve pre-compressed files
-    file_server {
-        precompressed br gzip
-    }
-}
-```
-
 ## Expected Results
 
 **Typical Compression Ratios:**
@@ -541,16 +460,10 @@ By file type:
 ✓ Compression complete!
 ==========================================
 
-Server configuration files generated:
-  - nginx-compression.conf
-  - .htaccess
-  - Caddyfile
-
 Next steps:
   1. Upload .br and .gz files alongside originals
-  2. Configure server to serve pre-compressed files
-  3. Test with curl -H "Accept-Encoding: br,gzip"
-  4. Monitor compression headers in browser DevTools
+  2. Test with curl -H "Accept-Encoding: br,gzip"
+  3. Monitor compression headers in browser DevTools
 ```
 
 ## Success Criteria
@@ -559,7 +472,6 @@ Next steps:
 - Brotli compression achieves 75-85% size reduction
 - Gzip compression achieves 65-75% size reduction
 - Original files remain unchanged
-- Server configuration generated
 - Compression report created
 
 ---
