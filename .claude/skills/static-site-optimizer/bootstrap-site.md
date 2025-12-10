@@ -190,7 +190,6 @@ Après avoir collecté toutes les réponses, générer la structure suivante:
 ├── robots.txt                    # Instructions moteurs de recherche
 ├── sitemap.xml                   # Plan du site
 ├── humans.txt                    # Crédits humains
-├── .htaccess                     # Config Apache (optionnel)
 └── README.md                     # Documentation du projet
 ```
 
@@ -420,32 +419,6 @@ Standards: HTML5, CSS3
 Software: Claude Code
 ```
 
-#### 4.4 .htaccess (Apache)
-```apache
-# Compression
-<IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/html text/css application/javascript
-</IfModule>
-
-# Cache
-<IfModule mod_expires.c>
-    ExpiresActive On
-    ExpiresByType text/html "access plus 1 hour"
-    ExpiresByType text/css "access plus 1 month"
-    ExpiresByType application/javascript "access plus 1 month"
-    ExpiresByType image/svg+xml "access plus 1 year"
-    ExpiresByType image/webp "access plus 1 year"
-    ExpiresByType image/avif "access plus 1 year"
-</IfModule>
-
-# Sécurité
-<IfModule mod_headers.c>
-    Header set X-Content-Type-Options "nosniff"
-    Header set X-Frame-Options "SAMEORIGIN"
-    Header set X-XSS-Protection "1; mode=block"
-</IfModule>
-```
-
 ---
 
 ### PHASE 5: Rapport de Génération
@@ -464,8 +437,7 @@ Software: Claude Code
 ║    ├── {NOMBRE} fichiers HTML                                ║
 ║    ├── 3 fichiers CSS                                        ║
 ║    ├── 1 fichier JS (minimal)                                ║
-║    ├── SEO: robots.txt, sitemap.xml, humans.txt              ║
-║    └── Config: .htaccess                                     ║
+║    └── SEO: robots.txt, sitemap.xml, humans.txt              ║
 ╠══════════════════════════════════════════════════════════════╣
 ║ ✅ CONFORMITÉ:                                               ║
 ║    • HTML5 sémantique                                        ║

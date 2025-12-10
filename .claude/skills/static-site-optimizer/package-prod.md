@@ -243,11 +243,6 @@ dist/
 - Add `font-display: swap` to fonts
 - Implement service worker (optional)
 
-**Generate server configs:**
-- Create `.htaccess` for Apache
-- Create `nginx.conf` snippet
-- Create `Caddyfile` snippet
-- Include compression, caching, security headers
 
 ### Step 10: PageSpeed Audit
 
@@ -350,16 +345,10 @@ PRODUCTION BUILD REPORT
   With AVIF + Brotli: ~89% bandwidth saved
   Estimated cost savings: $XX/month at 10K visitors
 
-🌐 SERVER CONFIGURATION:
-  ✓ .htaccess generated (Apache)
-  ✓ nginx.conf snippet generated
-  ✓ Caddyfile generated
-
 🚀 DEPLOYMENT CHECKLIST:
   ✓ All files minified
   ✓ Images in modern formats
   ✓ Pre-compressed versions ready
-  ✓ Server configs generated
   ✓ PageSpeed scores excellent
   ✓ Core Web Vitals passed
 
@@ -373,11 +362,10 @@ PRODUCTION BUILD REPORT
 NEXT STEPS:
   1. Test the production build locally
   2. Upload to production server
-  3. Configure server (use generated configs)
-  4. Verify compression is working:
+  3. Verify compression is working:
      curl -H "Accept-Encoding: br,gzip" https://your-site.com
-  5. Monitor PageSpeed scores in production
-  6. Set up performance monitoring
+  4. Monitor PageSpeed scores in production
+  5. Set up performance monitoring
 
 ===========================================
 ```
@@ -427,10 +415,6 @@ dist/  (production build)
 ├── assets/
 │   ├── fonts/                      (web fonts)
 │   └── ...
-├── server-configs/
-│   ├── .htaccess                   (Apache)
-│   ├── nginx.conf                  (Nginx)
-│   └── Caddyfile                   (Caddy)
 ├── reports/
 │   ├── build-report.json
 │   ├── pagespeed-report.json
@@ -469,7 +453,6 @@ Production build is ready when:
 - ✅ File sizes reduced by 70-90%
 - ✅ All images in modern formats with fallbacks
 - ✅ All text files pre-compressed
-- ✅ Server configurations generated
 - ✅ Build report shows excellent results
 - ✅ No broken functionality
 

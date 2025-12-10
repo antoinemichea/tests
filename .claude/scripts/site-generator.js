@@ -859,117 +859,6 @@ This site follows frugal hosting principles:
 }
 
 /**
- * Génère .htaccess
- */
-function generateHtaccess() {
-    return `# .htaccess - Configuration Apache
-# Site Statique Frugal
-
-# ============================================
-# COMPRESSION
-# ============================================
-<IfModule mod_deflate.c>
-    # Compresser les ressources texte
-    AddOutputFilterByType DEFLATE text/html
-    AddOutputFilterByType DEFLATE text/css
-    AddOutputFilterByType DEFLATE text/javascript
-    AddOutputFilterByType DEFLATE application/javascript
-    AddOutputFilterByType DEFLATE application/json
-    AddOutputFilterByType DEFLATE image/svg+xml
-    AddOutputFilterByType DEFLATE application/xml
-</IfModule>
-
-# Servir les fichiers pré-compressés si disponibles
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-
-    # Brotli
-    RewriteCond %{HTTP:Accept-Encoding} br
-    RewriteCond %{REQUEST_FILENAME}.br -f
-    RewriteRule ^(.*)$ $1.br [L]
-
-    # Gzip
-    RewriteCond %{HTTP:Accept-Encoding} gzip
-    RewriteCond %{REQUEST_FILENAME}.gz -f
-    RewriteRule ^(.*)$ $1.gz [L]
-</IfModule>
-
-<FilesMatch "\\.br$">
-    Header set Content-Encoding br
-</FilesMatch>
-
-<FilesMatch "\\.gz$">
-    Header set Content-Encoding gzip
-</FilesMatch>
-
-# ============================================
-# CACHE
-# ============================================
-<IfModule mod_expires.c>
-    ExpiresActive On
-
-    # HTML - Cache court
-    ExpiresByType text/html "access plus 1 hour"
-
-    # CSS & JS - Cache long
-    ExpiresByType text/css "access plus 1 month"
-    ExpiresByType application/javascript "access plus 1 month"
-
-    # Images - Cache très long
-    ExpiresByType image/svg+xml "access plus 1 year"
-    ExpiresByType image/webp "access plus 1 year"
-    ExpiresByType image/avif "access plus 1 year"
-    ExpiresByType image/png "access plus 1 year"
-    ExpiresByType image/jpeg "access plus 1 year"
-    ExpiresByType image/gif "access plus 1 year"
-
-    # Fonts - Cache très long
-    ExpiresByType font/woff2 "access plus 1 year"
-    ExpiresByType font/woff "access plus 1 year"
-    ExpiresByType application/font-woff2 "access plus 1 year"
-
-    # Favicon
-    ExpiresByType image/x-icon "access plus 1 year"
-</IfModule>
-
-# ============================================
-# SÉCURITÉ
-# ============================================
-<IfModule mod_headers.c>
-    # Empêcher le sniffing MIME
-    Header set X-Content-Type-Options "nosniff"
-
-    # Protection contre le clickjacking
-    Header set X-Frame-Options "SAMEORIGIN"
-
-    # Protection XSS
-    Header set X-XSS-Protection "1; mode=block"
-
-    # Referrer Policy
-    Header set Referrer-Policy "strict-origin-when-cross-origin"
-
-    # Permissions Policy (désactiver les APIs non utilisées)
-    Header set Permissions-Policy "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
-</IfModule>
-
-# ============================================
-# TYPES MIME
-# ============================================
-<IfModule mod_mime.c>
-    AddType image/avif .avif
-    AddType image/webp .webp
-    AddType font/woff2 .woff2
-    AddType application/manifest+json .webmanifest
-</IfModule>
-
-# ============================================
-# ERREURS PERSONNALISÉES
-# ============================================
-ErrorDocument 404 /404.html
-`;
-}
-
-/**
  * Génère le favicon SVG
  */
 function generateFaviconSVG(config, palette) {
@@ -1018,7 +907,6 @@ ${config.pages.filter(p => p !== 'Accueil').map(p => `├── ${slugify(p)}.ht
 ├── robots.txt                    # Instructions robots
 ├── sitemap.xml                   # Plan du site
 ├── humans.txt                    # Crédits
-├── .htaccess                     # Config Apache
 └── README.md                     # Ce fichier
 \`\`\`
 
@@ -1140,7 +1028,6 @@ function generateSite(config) {
     fs.writeFileSync(path.join(projectDir, 'robots.txt'), generateRobotsTxt(config));
     fs.writeFileSync(path.join(projectDir, 'sitemap.xml'), generateSitemapXml(config));
     fs.writeFileSync(path.join(projectDir, 'humans.txt'), generateHumansTxt(config));
-    fs.writeFileSync(path.join(projectDir, '.htaccess'), generateHtaccess());
     console.log('🔧 Fichiers SEO/techniques créés');
 
     // Favicon SVG
