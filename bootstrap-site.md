@@ -2,7 +2,10 @@
 
 ## Description
 
-Ce skill permet de créer un site web statique from scratch, optimisé pour l'hébergement frugal, le SEO, et la maintenabilité. Il guide l'utilisateur à travers une série de questions pour personnaliser le site selon ses besoins.
+Ce skill permet de créer un site web statique optimisé pour l'hébergement frugal, le SEO, et la maintenabilité. Deux modes sont disponibles:
+
+1. **From Scratch**: Création guidée via questionnaire interactif
+2. **Clone Design**: Analyse d'un site existant pour reproduire son style avec du code propre
 
 **Synergie avec les autres skills:**
 - Le site généré est directement compatible avec `optimize-dev` pour validation
@@ -13,7 +16,192 @@ Ce skill permet de créer un site web statique from scratch, optimisé pour l'h�
 
 ## Instructions
 
-### PHASE 1: Questionnaire Interactif
+### PHASE 0: Choix du Mode de Création
+
+Commence par demander à l'utilisateur quel mode il souhaite utiliser:
+
+```
+🚀 BOOTSTRAP SITE - Créateur de Site Statique Frugal
+
+Comment souhaitez-vous créer votre site?
+
+1. 🆕 FROM SCRATCH - Création guidée avec questionnaire
+   → Je vous pose 8 questions pour personnaliser votre site
+
+2. 🎨 CLONE DESIGN - Reproduire le style d'un site existant
+   → Donnez-moi une URL, j'analyse le design et le reproduis
+   → Code propre, bonnes pratiques, zéro copie de code source
+
+Répondez par le numéro (1 ou 2):
+```
+
+**Si l'utilisateur choisit 1 (FROM SCRATCH):** Passer directement à la PHASE 1.
+
+**Si l'utilisateur choisit 2 (CLONE DESIGN):** Passer à la PHASE 0-B (Analyse de Design).
+
+---
+
+### PHASE 0-B: Clone Design - Analyse de Site Existant
+
+#### Étape 1: Demander l'URL
+
+```
+🔗 CLONE DESIGN - Étape 1/3: URL du Site Source
+
+Entrez l'URL du site dont vous souhaitez reproduire le design:
+
+Exemple: https://example.com
+
+Note: Je vais analyser uniquement les éléments visuels (couleurs, typographie,
+mise en page). Le contenu et le code ne seront PAS copiés.
+```
+
+#### Étape 2: Analyser le Site Source
+
+**UTILISER WebFetch** pour récupérer et analyser la page avec ce prompt:
+
+```
+Analyse cette page web et extrais les informations de design suivantes en format structuré:
+
+1. PALETTE DE COULEURS:
+   - Couleur de fond principale (background)
+   - Couleur de texte principale
+   - Couleur d'accent/primaire (boutons, liens)
+   - Couleur secondaire (si présente)
+   - Couleurs additionnelles notables
+
+2. TYPOGRAPHIE:
+   - Police des titres (ou famille générique: serif, sans-serif, monospace)
+   - Police du corps de texte
+   - Tailles relatives (grands titres? texte compact?)
+   - Style général (léger, bold, mixte)
+
+3. MISE EN PAGE:
+   - Type de layout (centré, full-width, sidebar, grid)
+   - Largeur maximale du contenu (étroit ~800px, medium ~1200px, large)
+   - Style de navigation (horizontale, hamburger, sidebar)
+   - Présence de hero section
+
+4. ÉLÉMENTS DE STYLE:
+   - Border-radius (aucun, léger, arrondi, très arrondi)
+   - Ombres (aucune, subtile, prononcée)
+   - Espacement général (compact, aéré, très espacé)
+   - Animations/transitions visibles
+
+5. AMBIANCE GÉNÉRALE:
+   - Style dominant (moderne, minimaliste, corporate, créatif, rétro, brutaliste)
+   - Ton visuel (professionnel, décontracté, luxueux, technique)
+
+Format de réponse souhaité:
+```json
+{
+  "colors": {
+    "background": "#ffffff",
+    "text": "#333333",
+    "primary": "#0066cc",
+    "secondary": "#f5f5f5",
+    "accent": "#ff6600"
+  },
+  "typography": {
+    "headings": "sans-serif",
+    "body": "sans-serif",
+    "style": "modern-clean"
+  },
+  "layout": {
+    "type": "centered",
+    "maxWidth": "1200px",
+    "navigation": "horizontal-sticky"
+  },
+  "style": {
+    "borderRadius": "medium",
+    "shadows": "subtle",
+    "spacing": "comfortable"
+  },
+  "mood": {
+    "category": "moderne",
+    "tone": "professionnel"
+  }
+}
+```
+```
+
+#### Étape 3: Présenter l'Analyse et Confirmer
+
+Après l'analyse, présenter les résultats à l'utilisateur:
+
+```
+🎨 CLONE DESIGN - Étape 2/3: Analyse Terminée
+
+J'ai analysé le design de {URL}. Voici ce que j'ai identifié:
+
+╔══════════════════════════════════════════════════════════════╗
+║ 🎨 PALETTE DE COULEURS                                       ║
+╠══════════════════════════════════════════════════════════════╣
+║ Fond:      {COULEUR_FOND}     ████                          ║
+║ Texte:     {COULEUR_TEXTE}    ████                          ║
+║ Primaire:  {COULEUR_PRIMAIRE} ████                          ║
+║ Accent:    {COULEUR_ACCENT}   ████                          ║
+╠══════════════════════════════════════════════════════════════╣
+║ 📝 TYPOGRAPHIE                                               ║
+╠══════════════════════════════════════════════════════════════╣
+║ Titres: {POLICE_TITRES}                                      ║
+║ Corps:  {POLICE_CORPS}                                       ║
+║ Style:  {STYLE_TYPO}                                         ║
+╠══════════════════════════════════════════════════════════════╣
+║ 📐 MISE EN PAGE                                              ║
+╠══════════════════════════════════════════════════════════════╣
+║ Layout:     {TYPE_LAYOUT}                                    ║
+║ Navigation: {STYLE_NAV}                                      ║
+║ Ambiance:   {STYLE_GENERAL} / {TON}                         ║
+╚══════════════════════════════════════════════════════════════╝
+
+Souhaitez-vous:
+1. ✅ Valider et continuer avec ces paramètres
+2. 🔧 Modifier certains éléments (couleurs, style...)
+3. 🔄 Analyser une autre URL
+
+Répondez par le numéro (1-3):
+```
+
+**Si modifications demandées**, permettre à l'utilisateur de:
+- Changer les couleurs individuellement
+- Ajuster le style (plus minimaliste, plus corporate, etc.)
+- Modifier le type de navigation
+
+#### Étape 4: Questions Complémentaires
+
+Après validation du design cloné, poser uniquement les questions nécessaires:
+
+```
+📋 CLONE DESIGN - Étape 3/3: Informations Complémentaires
+
+Le design est validé! J'ai encore besoin de quelques informations:
+
+1. 🏷️ Nom du projet:
+
+2. 📄 Pages à créer (séparées par virgules):
+   Exemple: Accueil, À propos, Services, Contact
+
+3. ⚙️ Fonctionnalités (numéros séparés par virgules):
+   1. 📱 Navigation responsive
+   2. 🌙 Mode sombre
+   3. 📬 Formulaire de contact
+   4. 🔗 Liens réseaux sociaux
+   5. 🍪 Bannière cookies
+   6. ⬆️ Bouton retour en haut
+
+4. 🔍 Description SEO (160 caractères):
+
+5. 🌐 Langue: fr / en / autre
+```
+
+Ensuite, passer directement à la **PHASE 2** (Génération de la Structure) en utilisant:
+- Les couleurs et styles extraits du site analysé
+- Les informations complémentaires fournies par l'utilisateur
+
+---
+
+### PHASE 1: Questionnaire Interactif (Mode FROM SCRATCH)
 
 Pose les questions suivantes à l'utilisateur **UNE PAR UNE** et attends sa réponse avant de continuer:
 
@@ -376,6 +564,77 @@ Chaque page HTML DOIT respecter cette structure SEO-optimisée:
 }
 ```
 
+##### Style 9: Clone Design (Généré dynamiquement)
+
+Quand le mode **Clone Design** est utilisé, générer les variables CSS à partir des données extraites:
+
+```css
+/* Variables générées à partir de l'analyse du site source */
+:root {
+    /* Couleurs extraites */
+    --color-bg: {colors.background};
+    --color-text: {colors.text};
+    --color-primary: {colors.primary};
+    --color-secondary: {colors.secondary};
+    --color-accent: {colors.accent};
+
+    /* Typographie - Mapper vers polices système équivalentes */
+    --font-primary: {MAPPED_BODY_FONT};
+    --font-heading: {MAPPED_HEADING_FONT};
+
+    /* Style visuel extrait */
+    --border-radius: {MAPPED_BORDER_RADIUS};
+    --shadow: {MAPPED_SHADOW};
+    --spacing-unit: {MAPPED_SPACING};
+    --transition: 0.2s ease;
+
+    /* Largeur du contenu */
+    --max-width: {layout.maxWidth};
+}
+```
+
+**Mapping des polices vers équivalents système:**
+
+| Police détectée | Équivalent système (frugal) |
+|-----------------|----------------------------|
+| Inter, Helvetica, Arial | `system-ui, -apple-system, BlinkMacSystemFont, sans-serif` |
+| Roboto, Open Sans | `'Segoe UI', Roboto, sans-serif` |
+| Playfair, Merriweather | `Georgia, 'Times New Roman', serif` |
+| Lora, Libre Baskerville | `'Palatino Linotype', Georgia, serif` |
+| Fira Code, Source Code | `'Fira Code', Consolas, Monaco, monospace` |
+| Montserrat, Poppins | `system-ui, 'Segoe UI', sans-serif` |
+| Cursive/Handwriting | `'Lucida Handwriting', cursive, serif` |
+
+**Mapping du border-radius:**
+
+| Valeur détectée | Variable CSS |
+|-----------------|--------------|
+| none / 0 | `0` |
+| léger (2-4px) | `0.25rem` |
+| medium (6-10px) | `0.5rem` |
+| arrondi (12-20px) | `1rem` |
+| très arrondi (>20px) | `1.5rem` |
+| pill/full | `9999px` |
+
+**Mapping des ombres:**
+
+| Style détecté | Variable CSS |
+|---------------|--------------|
+| aucune | `none` |
+| subtile | `0 1px 3px rgba(0,0,0,0.1)` |
+| medium | `0 4px 6px -1px rgba(0,0,0,0.1)` |
+| prononcée | `0 10px 25px rgba(0,0,0,0.15)` |
+| brutale | `5px 5px 0 {color-text}` |
+
+**Mapping de l'espacement:**
+
+| Densité détectée | Variable CSS |
+|------------------|--------------|
+| compact | `1rem` |
+| comfortable | `1.5rem` |
+| aéré | `2rem` |
+| très espacé | `3rem` |
+
 ---
 
 ### PHASE 4: Fichiers SEO et Techniques
@@ -549,6 +808,66 @@ Réponses:
 7. 1 (Lorem Ipsum)
 8. "Boulangerie artisanale bio...", "boulangerie, bio, pain, artisan", "fr", "Lyon, France"
 ```
+
+### Exemple 3: Clone Design - Reproduire le Style d'un Site
+
+```
+Étape 0: Mode de création
+→ 2 (Clone Design)
+
+Étape 1: URL du site source
+→ https://stripe.com
+
+Étape 2: Analyse (automatique via WebFetch)
+→ Résultat:
+   Couleurs: #0a2540 (fond sombre), #ffffff (texte), #635bff (accent violet)
+   Typo: Sans-serif moderne (Inter → system-ui)
+   Layout: Centré, max-width 1200px, navigation sticky
+   Style: Border-radius medium, ombres subtiles, espacement aéré
+   Ambiance: Moderne / Professionnel-Tech
+
+Étape 3: Validation
+→ 1 (Valider ces paramètres)
+
+Étape 4: Informations complémentaires
+→ Nom: "Mon SaaS"
+→ Pages: Accueil, Fonctionnalités, Tarifs, Contact
+→ Fonctionnalités: 1,2,3,4 (Nav + Dark mode + Formulaire + Réseaux)
+→ Description: "Solution SaaS innovante pour..."
+→ Langue: fr
+```
+
+**Résultat:** Un site avec le même style épuré de Stripe, mais:
+- Code 100% original et propre
+- Zéro dépendance externe
+- Polices système (pas de Google Fonts)
+- Contenu personnalisé
+
+### Exemple 4: Clone Design avec Modifications
+
+```
+Étape 0: Mode de création
+→ 2 (Clone Design)
+
+Étape 1: URL
+→ https://notion.so
+
+Étape 2: Analyse automatique
+→ Résultat: Minimaliste, noir/blanc, sans-serif, très espacé
+
+Étape 3: Validation
+→ 2 (Modifier certains éléments)
+→ "Je voudrais garder le style minimaliste mais avec une touche de bleu #2563eb comme accent"
+
+Étape 4: Informations complémentaires
+→ Nom: "Mon Wiki Personnel"
+→ Pages: Accueil, Notes, Projets, À propos
+→ Fonctionnalités: 1,2,6 (Nav + Dark mode + Retour haut)
+→ Description: "Wiki personnel pour organiser mes notes..."
+→ Langue: fr
+```
+
+**Résultat:** Style Notion adapté avec la couleur accent personnalisée.
 
 ---
 
