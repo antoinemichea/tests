@@ -95,6 +95,12 @@ JPEG:      hero-1024w.jpg   135 KB (-70%)
 - Remove comments
 - Merge media queries
 
+⚠️ **ATTENTION - Options CSSO:**
+Si CSSO est utilisé, **TOUJOURS utiliser `--no-restructure`** pour éviter que les propriétés CSS ne soient séparées, ce qui casse les animations et gradients:
+```bash
+csso --no-restructure input.css --output output.min.css
+```
+
 **Critical CSS:**
 - Extract above-the-fold CSS
 - Inline critical CSS in `<head>`
@@ -138,6 +144,25 @@ JPEG:      hero-1024w.jpg   135 KB (-70%)
 - Remove quotes where safe
 - Minify inline CSS and JS
 - Remove empty attributes
+
+⚠️ **ATTENTION - Options html-minifier-terser:**
+**NE JAMAIS utiliser `--remove-tag-whitespace`** car cette option supprime les espaces entre les attributs HTML et génère du HTML invalide:
+```html
+<!-- Résultat cassé avec --remove-tag-whitespace -->
+<span class="title"data-i18n="key">  <!-- Espace manquant ! -->
+```
+
+**Commande sécurisée:**
+```bash
+html-minifier-terser \
+  --collapse-whitespace \
+  --remove-comments \
+  --remove-redundant-attributes \
+  --remove-script-type-attributes \
+  --minify-css true \
+  --minify-js true \
+  input.html -o output.html
+```
 
 **Inline optimizations:**
 - Inline critical CSS
