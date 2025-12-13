@@ -35,11 +35,21 @@ For each HTML file, create a minified version that:
 - Remove script type attributes
 - Sort class names and attributes
 
-**Tool: html-minifier**
-```bash
-npm install -g html-minifier
+**Tool: html-minifier-terser**
 
-html-minifier \
+⚠️ **ATTENTION - Options dangereuses à éviter:**
+- **NE JAMAIS utiliser `--remove-tag-whitespace`** : Cette option supprime les espaces entre les attributs HTML, ce qui casse le parsing et génère du HTML invalide :
+  ```html
+  <!-- Résultat cassé avec --remove-tag-whitespace -->
+  <span class="hero-title-static"data-i18n="hero.titleStatic">
+  <!-- Il manque l'espace avant data-i18n ! -->
+  ```
+
+```bash
+npm install -g html-minifier-terser
+
+# Commande SÉCURISÉE (sans --remove-tag-whitespace)
+html-minifier-terser \
   --collapse-whitespace \
   --remove-comments \
   --remove-redundant-attributes \
@@ -105,12 +115,25 @@ For each CSS file:
 
 **Tools:**
 - **cssnano** (via PostCSS): Best compression
+- **CSSO**: Fast CSS optimizer
 - **clean-css**: Fast and reliable
 - **PurgeCSS**: Remove unused CSS
 - **critical**: Extract critical CSS
 
+⚠️ **ATTENTION - CSSO et la restructuration:**
+- **TOUJOURS utiliser `--no-restructure` avec CSSO** : Par défaut, CSSO restructure le CSS et peut séparer les propriétés d'une même règle en plusieurs blocs, ce qui casse les animations et effets visuels :
+  ```css
+  /* Résultat cassé SANS --no-restructure - propriétés séparées */
+  .gradient-text{-webkit-background-clip:text;background-clip:text}
+  .gradient-text{background:linear-gradient(...);animation:...}
+  /* Les propriétés sont séparées = animation cassée ! */
+  ```
+
 ```bash
-npm install -g cssnano-cli clean-css-cli purgecss
+npm install -g cssnano-cli clean-css-cli purgecss csso-cli
+
+# Using CSSO (TOUJOURS avec --no-restructure)
+csso --no-restructure styles.css --output styles.min.css
 
 # Using cssnano
 cssnano styles.css styles.min.css
